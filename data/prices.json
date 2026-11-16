@@ -1,0 +1,1458 @@
+[
+ {
+  "row": 3,
+  "section": "Restorative dentistry (treatment)",
+  "service": "Single-use hygiene kit",
+  "code": "1.36",
+  "price_eur": 3.19
+ },
+ {
+  "row": 4,
+  "section": "Restorative dentistry (treatment)",
+  "service": "Core build-up of a molar for a prosthetic restoration",
+  "code": "1.25",
+  "price_eur": 23.89
+ },
+ {
+  "row": 5,
+  "section": "Restorative dentistry (treatment)",
+  "service": "Core build-up of an anterior tooth for a prosthetic restoration",
+  "code": "1.26",
+  "price_eur": 30.86
+ },
+ {
+  "row": 6,
+  "section": "Restorative dentistry (treatment)",
+  "service": "Additional glass-fibre post",
+  "code": "1.28",
+  "price_eur": 8.36
+ },
+ {
+  "row": 7,
+  "section": "Restorative dentistry (treatment)",
+  "service": "Internal tooth bleaching",
+  "code": "1.31",
+  "price_eur": 34.85
+ },
+ {
+  "row": 8,
+  "section": "Restorative dentistry (treatment)",
+  "service": "Local anaesthesia",
+  "code": "1.3",
+  "price_eur": 4.18
+ },
+ {
+  "row": 9,
+  "section": "Restorative dentistry (treatment)",
+  "service": "Removal of a metal crown",
+  "code": "1.29",
+  "price_eur": 6.17
+ },
+ {
+  "row": 10,
+  "section": "Restorative dentistry (treatment)",
+  "service": "Removal of a metal-ceramic / cast crown",
+  "code": "1.30",
+  "price_eur": 8.56
+ },
+ {
+  "row": 11,
+  "section": "Restorative dentistry (treatment)",
+  "service": "Rubber dam placement",
+  "code": "1.4",
+  "price_eur": 4.18
+ },
+ {
+  "row": 12,
+  "section": "Restorative dentistry (treatment)",
+  "service": "Placement of devitalising paste",
+  "code": "1.6",
+  "price_eur": 12.35
+ },
+ {
+  "row": 13,
+  "section": "Restorative dentistry (treatment)",
+  "service": "Fluoride varnish application, 1 tooth",
+  "code": "1.8",
+  "price_eur": 4.18
+ },
+ {
+  "row": 14,
+  "section": "Restorative dentistry (treatment)",
+  "service": "Fluoride varnish application, 1 segment (6 teeth)",
+  "code": "1.7",
+  "price_eur": 8.36
+ },
+ {
+  "row": 15,
+  "section": "Restorative dentistry (treatment)",
+  "service": "Extended consultation",
+  "code": "1.2",
+  "price_eur": 9.36
+ },
+ {
+  "row": 16,
+  "section": "Restorative dentistry (treatment)",
+  "service": "Dental radiograph",
+  "code": "1.5",
+  "price_eur": 4.18
+ },
+ {
+  "row": 17,
+  "section": "Restorative dentistry (treatment)",
+  "service": "Restoration of a molar, 1 surface",
+  "code": "1.9",
+  "price_eur": 29.87
+ },
+ {
+  "row": 18,
+  "section": "Restorative dentistry (treatment)",
+  "service": "Restoration of a single-surface molar",
+  "code": "1.10",
+  "price_eur": 39.03
+ },
+ {
+  "row": 19,
+  "section": "Restorative dentistry (treatment)",
+  "service": "Restoration of a two-surface molar",
+  "code": "1.11",
+  "price_eur": 49.38
+ },
+ {
+  "row": 20,
+  "section": "Restorative dentistry (treatment)",
+  "service": "Restoration of an anterior tooth, 1 surface",
+  "code": "1.12",
+  "price_eur": 34.85
+ },
+ {
+  "row": 21,
+  "section": "Restorative dentistry (treatment)",
+  "service": "Restoration of a single-surface anterior tooth",
+  "code": "1.13",
+  "price_eur": 45.2
+ },
+ {
+  "row": 22,
+  "section": "Restorative dentistry (treatment)",
+  "service": "Two-surface restoration of an anterior tooth",
+  "code": "",
+  "price_eur": 57.74
+ },
+ {
+  "row": 23,
+  "section": "Restorative dentistry (treatment)",
+  "service": "Glass-fibre post cementation",
+  "code": "1.27",
+  "price_eur": 12.35
+ },
+ {
+  "row": 24,
+  "section": "Restorative dentistry (treatment)",
+  "service": "Core build-up for a prosthetic restoration with a deep subgingival defect",
+  "code": "",
+  "price_eur": 30.86
+ },
+ {
+  "row": 25,
+  "section": "Restorative dentistry (treatment)",
+  "service": "Additional local anaesthetic cartridge",
+  "code": "",
+  "price_eur": 2.19
+ },
+ {
+  "row": 26,
+  "section": "Restorative dentistry (treatment)",
+  "service": "Temporary build-up",
+  "code": "",
+  "price_eur": 10.35
+ },
+ {
+  "row": 27,
+  "section": "Restorative dentistry (treatment)",
+  "service": "Aesthetic restoration",
+  "code": "",
+  "price_eur": 67.7
+ },
+ {
+  "row": 28,
+  "section": "Restorative dentistry (treatment)",
+  "service": "Bonding of onlay + bar",
+  "code": "",
+  "price_eur": 16.53
+ },
+ {
+  "row": 29,
+  "section": "Restorative dentistry (treatment)",
+  "service": "Clinical photo documentation",
+  "code": "",
+  "price_eur": 4.18
+ },
+ {
+  "row": 30,
+  "section": "Restorative dentistry (treatment)",
+  "service": "Additional reinforcement of tooth walls with Ever X composite",
+  "code": "",
+  "price_eur": 13.34
+ },
+ {
+  "row": 31,
+  "section": "Restorative dentistry (treatment)",
+  "service": "Complex aesthetic restoration",
+  "code": "",
+  "price_eur": 92.39
+ },
+ {
+  "row": 32,
+  "section": "Restorative dentistry (treatment)",
+  "service": "Root canal disobturation",
+  "code": "",
+  "price_eur": 47.19
+ },
+ {
+  "row": 33,
+  "section": "Restorative dentistry (treatment)",
+  "service": "Pre-operative professional hygiene",
+  "code": "",
+  "price_eur": 14.34
+ },
+ {
+  "row": 34,
+  "section": "Restorative dentistry (treatment)",
+  "service": "Polishing of a restoration placed elsewhere",
+  "code": "",
+  "price_eur": 11.95
+ },
+ {
+  "row": 35,
+  "section": "Restorative dentistry (treatment)",
+  "service": "Biomodel fabrication (laboratory fee)",
+  "code": "",
+  "price_eur": 35.04
+ },
+ {
+  "row": 37,
+  "section": "Periodontics",
+  "service": "Periodontal consultation and initial periodontal charting",
+  "code": "2.8",
+  "price_eur": 16.53
+ },
+ {
+  "row": 38,
+  "section": "Periodontics",
+  "service": "Single-use periodontal kit",
+  "code": "",
+  "price_eur": 3.19
+ },
+ {
+  "row": 39,
+  "section": "Periodontics",
+  "service": "Professional hygiene",
+  "code": "",
+  "price_eur": 41.02
+ },
+ {
+  "row": 40,
+  "section": "Periodontics",
+  "service": "Partial professional hygiene",
+  "code": "2.3",
+  "price_eur": 22.7
+ },
+ {
+  "row": 41,
+  "section": "Periodontics",
+  "service": "Removal of dental deposits around one tooth",
+  "code": "2.1",
+  "price_eur": 4.18
+ },
+ {
+  "row": 42,
+  "section": "Periodontics",
+  "service": "Splinting of one tooth",
+  "code": "",
+  "price_eur": 7.17
+ },
+ {
+  "row": 43,
+  "section": "Periodontics",
+  "service": "Splinting of a mobile tooth with composite",
+  "code": "2.6",
+  "price_eur": 9.36
+ },
+ {
+  "row": 44,
+  "section": "Periodontics",
+  "service": "Local anaesthesia",
+  "code": "",
+  "price_eur": 4.18
+ },
+ {
+  "row": 45,
+  "section": "Periodontics",
+  "service": "Additional local anaesthetic cartridge",
+  "code": "",
+  "price_eur": 2.19
+ },
+ {
+  "row": 46,
+  "section": "Periodontics",
+  "service": "Excision of overgrown gingival tissue",
+  "code": "2.7",
+  "price_eur": 7.17
+ },
+ {
+  "row": 47,
+  "section": "Periodontics",
+  "service": "Scaling",
+  "code": "",
+  "price_eur": 162.08
+ },
+ {
+  "row": 48,
+  "section": "Periodontics",
+  "service": "Repeat curettage",
+  "code": "",
+  "price_eur": 22.7
+ },
+ {
+  "row": 49,
+  "section": "Periodontics",
+  "service": "Soft-tissue augmentation (at implant placement or second-stage surgery)",
+  "code": "",
+  "price_eur": 140.0
+ },
+ {
+  "row": 50,
+  "section": "Periodontics",
+  "service": "Vestibuloplasty (3–6 teeth)",
+  "code": "",
+  "price_eur": 260.0
+ },
+ {
+  "row": 51,
+  "section": "Periodontics",
+  "service": "Treatment of a single gingival recession",
+  "code": "",
+  "price_eur": 210.0
+ },
+ {
+  "row": 52,
+  "section": "Periodontics",
+  "service": "Treatment of multiple gingival recessions (3–6 teeth)",
+  "code": "",
+  "price_eur": 340.0
+ },
+ {
+  "row": 53,
+  "section": "Periodontics",
+  "service": "Follow-up periodontal charting",
+  "code": "",
+  "price_eur": 13.34
+ },
+ {
+  "row": 54,
+  "section": "Periodontics",
+  "service": "Scaling and root planing (SRP), one tooth",
+  "code": "",
+  "price_eur": 6.17
+ },
+ {
+  "row": 55,
+  "section": "Periodontics",
+  "service": "Scaling and root planing (SRP), one jaw",
+  "code": "",
+  "price_eur": 78.05
+ },
+ {
+  "row": 56,
+  "section": "Periodontics",
+  "service": "Periodontal follow-up examination with charting, 3–6 months after treatment",
+  "code": "",
+  "price_eur": 12.35
+ },
+ {
+  "row": 57,
+  "section": "Periodontics",
+  "service": "Open curettage at one tooth, without bone grafting material",
+  "code": "2.10",
+  "price_eur": 14.34
+ },
+ {
+  "row": 58,
+  "section": "Periodontics",
+  "service": "Irrigation of periodontal pocket with suppuration",
+  "code": "2.12",
+  "price_eur": 2.19
+ },
+ {
+  "row": 59,
+  "section": "Periodontics",
+  "service": "Root canal disobturation",
+  "code": "",
+  "price_eur": 47.19
+ },
+ {
+  "row": 60,
+  "section": "Periodontics",
+  "service": "Partial pre-operative professional hygiene",
+  "code": "",
+  "price_eur": 7.17
+ },
+ {
+  "row": 62,
+  "section": "Endodontics",
+  "service": "Pulp amputation with MTA placement",
+  "code": "3.15",
+  "price_eur": 24.69
+ },
+ {
+  "row": 63,
+  "section": "Endodontics",
+  "service": "Removal of an anchor post",
+  "code": "3.6",
+  "price_eur": 14.34
+ },
+ {
+  "row": 64,
+  "section": "Endodontics",
+  "service": "Removal of a metal inlay",
+  "code": "3.7",
+  "price_eur": 24.69
+ },
+ {
+  "row": 65,
+  "section": "Endodontics",
+  "service": "Endodontic re-treatment (incisors and canines)",
+  "code": "3.20",
+  "price_eur": 69.69
+ },
+ {
+  "row": 66,
+  "section": "Endodontics",
+  "service": "Endodontic re-treatment (premolars)",
+  "code": "3.21",
+  "price_eur": 89.6
+ },
+ {
+  "row": 67,
+  "section": "Endodontics",
+  "service": "Endodontic re-treatment (molars)",
+  "code": "3.22",
+  "price_eur": 109.51
+ },
+ {
+  "row": 68,
+  "section": "Endodontics",
+  "service": "Removal of a separated instrument from the root canal",
+  "code": "3.12",
+  "price_eur": 51.37
+ },
+ {
+  "row": 69,
+  "section": "Endodontics",
+  "service": "Perforation repair with MTA",
+  "code": "3.14",
+  "price_eur": 20.51
+ },
+ {
+  "row": 70,
+  "section": "Endodontics",
+  "service": "Local anaesthesia",
+  "code": "3.1",
+  "price_eur": 4.18
+ },
+ {
+  "row": 71,
+  "section": "Endodontics",
+  "service": "Root canal treatment — anterior teeth (incisors and canines)",
+  "code": "3.16",
+  "price_eur": 49.78
+ },
+ {
+  "row": 72,
+  "section": "Endodontics",
+  "service": "Root canal treatment — premolars",
+  "code": "3.17",
+  "price_eur": 69.69
+ },
+ {
+  "row": 73,
+  "section": "Endodontics",
+  "service": "Root canal treatment — molars",
+  "code": "3.18",
+  "price_eur": 89.6
+ },
+ {
+  "row": 74,
+  "section": "Endodontics",
+  "service": "Placement of devitalising paste",
+  "code": "3.2",
+  "price_eur": 10.35
+ },
+ {
+  "row": 75,
+  "section": "Endodontics",
+  "service": "Root canal filling with calcium-based paste",
+  "code": "3.9",
+  "price_eur": 13.34
+ },
+ {
+  "row": 76,
+  "section": "Endodontics",
+  "service": "MTA pulp capping for an exposed pulp horn",
+  "code": "3.8",
+  "price_eur": 20.51
+ },
+ {
+  "row": 77,
+  "section": "Endodontics",
+  "service": "Tooth revision",
+  "code": "3.10",
+  "price_eur": 7.17
+ },
+ {
+  "row": 78,
+  "section": "Endodontics",
+  "service": "Root canal revision",
+  "code": "3.11",
+  "price_eur": 10.35
+ },
+ {
+  "row": 79,
+  "section": "Endodontics",
+  "service": "Apexification of immature roots",
+  "code": "",
+  "price_eur": 67.7
+ },
+ {
+  "row": 80,
+  "section": "Endodontics",
+  "service": "Rubber dam placement",
+  "code": "",
+  "price_eur": 4.18
+ },
+ {
+  "row": 81,
+  "section": "Endodontics",
+  "service": "Single-use hygiene kit",
+  "code": "",
+  "price_eur": 3.19
+ },
+ {
+  "row": 82,
+  "section": "Endodontics",
+  "service": "Additional local anaesthetic carpule",
+  "code": "",
+  "price_eur": 2.19
+ },
+ {
+  "row": 83,
+  "section": "Endodontics",
+  "service": "Filling of one root canal with MTA",
+  "code": "",
+  "price_eur": 10.35
+ },
+ {
+  "row": 84,
+  "section": "Endodontics",
+  "service": "ICON treatment for one tooth",
+  "code": "",
+  "price_eur": 28.87
+ },
+ {
+  "row": 85,
+  "section": "Endodontics",
+  "service": "Complex endodontic treatment with bioceramic material",
+  "code": "",
+  "price_eur": 153.92
+ },
+ {
+  "row": 86,
+  "section": "Endodontics",
+  "service": "Root canal treatment with bioceramic material (incisor)",
+  "code": "",
+  "price_eur": 88.21
+ },
+ {
+  "row": 88,
+  "section": "Surgery",
+  "service": "Socket preservation with Colacone for delayed implant placement",
+  "code": "5.6",
+  "price_eur": 11.35
+ },
+ {
+  "row": 89,
+  "section": "Surgery",
+  "service": "Excision of the operculum over a wisdom tooth",
+  "code": "5.9",
+  "price_eur": 14.34
+ },
+ {
+  "row": 90,
+  "section": "Surgery",
+  "service": "Blood collection and PRF membrane preparation before surgery",
+  "code": "5.8",
+  "price_eur": 12.35
+ },
+ {
+  "row": 91,
+  "section": "Surgery",
+  "service": "Blood collection and PRF membrane preparation before extraction (1–2 teeth)",
+  "code": "5.7",
+  "price_eur": 9.96
+ },
+ {
+  "row": 92,
+  "section": "Surgery",
+  "service": "Blood collection and PRF membrane preparation before extraction (3–4 teeth)",
+  "code": "",
+  "price_eur": 10.35
+ },
+ {
+  "row": 93,
+  "section": "Surgery",
+  "service": "Gingival recession coverage for one tooth",
+  "code": "5.14",
+  "price_eur": 160.0
+ },
+ {
+  "row": 94,
+  "section": "Surgery",
+  "service": "Conventional tooth extraction with socket suturing and antimicrobial sponge placement",
+  "code": "5.1",
+  "price_eur": 16.53
+ },
+ {
+  "row": 95,
+  "section": "Surgery",
+  "service": "Frenectomy",
+  "code": "5.13",
+  "price_eur": 41.02
+ },
+ {
+  "row": 96,
+  "section": "Surgery",
+  "service": "Incision for periostitis",
+  "code": "5.10",
+  "price_eur": 15.53
+ },
+ {
+  "row": 97,
+  "section": "Surgery",
+  "service": "Extraction of a wisdom tooth (Grade 1 complexity), with socket suturing and antimicrobial sponge placement",
+  "code": "5.2",
+  "price_eur": 82.04
+ },
+ {
+  "row": 98,
+  "section": "Surgery",
+  "service": "Extraction of a wisdom tooth (Grade 2 complexity)",
+  "code": "",
+  "price_eur": 102.54
+ },
+ {
+  "row": 99,
+  "section": "Surgery",
+  "service": "Complex tooth extraction with socket suturing and antimicrobial sponge placement",
+  "code": "",
+  "price_eur": 20.51
+ },
+ {
+  "row": 100,
+  "section": "Surgery",
+  "service": "Extraction of a wisdom tooth adjacent to anatomical structures",
+  "code": "",
+  "price_eur": 205.09
+ },
+ {
+  "row": 101,
+  "section": "Surgery",
+  "service": "Removal of a retention cyst",
+  "code": "",
+  "price_eur": 37.04
+ },
+ {
+  "row": 102,
+  "section": "Surgery",
+  "service": "Removal of an impacted tooth",
+  "code": "",
+  "price_eur": 92.39
+ },
+ {
+  "row": 103,
+  "section": "Surgery",
+  "service": "Histopathological examination",
+  "code": "",
+  "price_eur": 20.51
+ },
+ {
+  "row": 104,
+  "section": "Surgery",
+  "service": "Local anaesthesia",
+  "code": "",
+  "price_eur": 4.18
+ },
+ {
+  "row": 105,
+  "section": "Surgery",
+  "service": "Surgical exposure of canines",
+  "code": "",
+  "price_eur": 37.04
+ },
+ {
+  "row": 106,
+  "section": "Surgery",
+  "service": "Crown lengthening",
+  "code": "",
+  "price_eur": 6.17
+ },
+ {
+  "row": 107,
+  "section": "Surgery",
+  "service": "Collagen wedge placement",
+  "code": "",
+  "price_eur": 10.35
+ },
+ {
+  "row": 108,
+  "section": "Surgery",
+  "service": "Single-use hygiene kit",
+  "code": "",
+  "price_eur": 3.19
+ },
+ {
+  "row": 109,
+  "section": "Surgery",
+  "service": "Additional local anaesthetic cartridge",
+  "code": "",
+  "price_eur": 2.19
+ },
+ {
+  "row": 110,
+  "section": "Surgery",
+  "service": "Removal of wisdom tooth buds",
+  "code": "",
+  "price_eur": 92.39
+ },
+ {
+  "row": 111,
+  "section": "Surgery",
+  "service": "Fabrication of a protective palatal splint",
+  "code": "",
+  "price_eur": 24.69
+ },
+ {
+  "row": 112,
+  "section": "Surgery",
+  "service": "Excision of an epulis",
+  "code": "",
+  "price_eur": 86.22
+ },
+ {
+  "row": 113,
+  "section": "Surgery",
+  "service": "Retrograde filling of one root canal",
+  "code": "",
+  "price_eur": 49.38
+ },
+ {
+  "row": 114,
+  "section": "Surgery",
+  "service": "Membrane placement",
+  "code": "",
+  "price_eur": 120.0
+ },
+ {
+  "row": 115,
+  "section": "Surgery",
+  "service": "Implant removal",
+  "code": "",
+  "price_eur": 60.0
+ },
+ {
+  "row": 116,
+  "section": "Surgery",
+  "service": "Apical microsurgery of an anterior tooth with retrograde MTA filling",
+  "code": "",
+  "price_eur": 310.0
+ },
+ {
+  "row": 117,
+  "section": "Surgery",
+  "service": "Apical microsurgery of a posterior tooth with retrograde MTA filling",
+  "code": "",
+  "price_eur": 340.0
+ },
+ {
+  "row": 118,
+  "section": "Surgery",
+  "service": "Sterilisation pack",
+  "code": "",
+  "price_eur": 61.73
+ },
+ {
+  "row": 119,
+  "section": "Surgery",
+  "service": "Tooth extraction and socket preservation",
+  "code": "",
+  "price_eur": 60.0
+ },
+ {
+  "row": 121,
+  "section": "Surgery (Dr. R.A.)",
+  "service": "Wisdom tooth extraction, Grade 1 difficulty, with socket suturing and antimicrobial sponge placement",
+  "code": "",
+  "price_eur": 159.29
+ },
+ {
+  "row": 122,
+  "section": "Surgery (Dr. R.A.)",
+  "service": "Wisdom tooth extraction, Grade 2 difficulty, with socket suturing and antimicrobial sponge placement",
+  "code": "",
+  "price_eur": 199.12
+ },
+ {
+  "row": 124,
+  "section": "Implantology",
+  "service": "Surgical guide for 1–2 implants",
+  "code": "6.1",
+  "price_eur": 80.0
+ },
+ {
+  "row": 125,
+  "section": "Implantology",
+  "service": "Surgical guide for 3–4 implants",
+  "code": "6.37",
+  "price_eur": 120.0
+ },
+ {
+  "row": 126,
+  "section": "Implantology",
+  "service": "Surgical guide for 5–6 implants",
+  "code": "6.38",
+  "price_eur": 160.0
+ },
+ {
+  "row": 127,
+  "section": "Implantology",
+  "service": "Sealing the screw access channel in an implant crown",
+  "code": "6.23",
+  "price_eur": 14.34
+ },
+ {
+  "row": 128,
+  "section": "Implantology",
+  "service": "Impressions of implants for temporary crowns",
+  "code": "",
+  "price_eur": 10.35
+ },
+ {
+  "row": 129,
+  "section": "Implantology",
+  "service": "Impressions of implants for permanent crowns",
+  "code": "",
+  "price_eur": 18.52
+ },
+ {
+  "row": 130,
+  "section": "Implantology",
+  "service": "Zirconia crown on Osstem implant",
+  "code": "",
+  "price_eur": 360.0
+ },
+ {
+  "row": 131,
+  "section": "Implantology",
+  "service": "Zirconia crown on Straumann implant",
+  "code": "",
+  "price_eur": 450.0
+ },
+ {
+  "row": 132,
+  "section": "Implantology",
+  "service": "Osstem implant placement (Korea)",
+  "code": "6.5",
+  "price_eur": 460.0
+ },
+ {
+  "row": 133,
+  "section": "Implantology",
+  "service": "Straumann BLT implant placement (Switzerland)",
+  "code": "6.6",
+  "price_eur": 830.0
+ },
+ {
+  "row": 134,
+  "section": "Implantology",
+  "service": "Straumann SLAactive implant placement",
+  "code": "6.7",
+  "price_eur": 830.0
+ },
+ {
+  "row": 135,
+  "section": "Implantology",
+  "service": "Healing abutment placement",
+  "code": "6.16",
+  "price_eur": 65.0
+ },
+ {
+  "row": 136,
+  "section": "Implantology",
+  "service": "Gingival (soft-tissue) grafting around one tooth",
+  "code": "6.14",
+  "price_eur": 65.0
+ },
+ {
+  "row": 137,
+  "section": "Implantology",
+  "service": "Bone grafting during placement of one implant",
+  "code": "6.8",
+  "price_eur": 260.0
+ },
+ {
+  "row": 138,
+  "section": "Implantology",
+  "service": "Bone grafting during placement of multiple implants",
+  "code": "6.30",
+  "price_eur": 520.0
+ },
+ {
+  "row": 139,
+  "section": "Implantology",
+  "service": "Pre-implant bone grafting at one implant site",
+  "code": "",
+  "price_eur": 420.0
+ },
+ {
+  "row": 140,
+  "section": "Implantology",
+  "service": "Pre-implant bone grafting at multiple implant sites",
+  "code": "6.11",
+  "price_eur": 830.0
+ },
+ {
+  "row": 141,
+  "section": "Implantology",
+  "service": "Sinus lift before implant placement, one implant site",
+  "code": "6.12",
+  "price_eur": 530.0
+ },
+ {
+  "row": 142,
+  "section": "Implantology",
+  "service": "Sinus lift before implant placement, two implant sites",
+  "code": "",
+  "price_eur": 830.0
+ },
+ {
+  "row": 143,
+  "section": "Implantology",
+  "service": "Sinus lift during implant placement, one implant",
+  "code": "6.13",
+  "price_eur": 330.0
+ },
+ {
+  "row": 144,
+  "section": "Implantology",
+  "service": "Sinus lift during implant placement, 2–3 implants",
+  "code": "",
+  "price_eur": 630.0
+ },
+ {
+  "row": 145,
+  "section": "Implantology",
+  "service": "Bone grafting with lamina for 2–3 teeth",
+  "code": "",
+  "price_eur": 1240.0
+ },
+ {
+  "row": 146,
+  "section": "Implantology",
+  "service": "Bone grafting with lamina for 1–2 teeth",
+  "code": "",
+  "price_eur": 830.0
+ },
+ {
+  "row": 147,
+  "section": "Implantology",
+  "service": "Closed sinus lift",
+  "code": "",
+  "price_eur": 160.0
+ },
+ {
+  "row": 148,
+  "section": "Implantology",
+  "service": "Temporary crown on implant",
+  "code": "6.22",
+  "price_eur": 51.37
+ },
+ {
+  "row": 149,
+  "section": "Implantology",
+  "service": "Metal-acrylic prosthesis on implants",
+  "code": "",
+  "price_eur": 440.0
+ },
+ {
+  "row": 150,
+  "section": "Implantology",
+  "service": "Acrylic denture on Locator attachments",
+  "code": "",
+  "price_eur": 10.95
+ },
+ {
+  "row": 151,
+  "section": "Implantology",
+  "service": "Gingival zenith correction for one tooth",
+  "code": "",
+  "price_eur": 30.0
+ },
+ {
+  "row": 152,
+  "section": "Implantology",
+  "service": "Temporary crown on abutment placed during surgery",
+  "code": "",
+  "price_eur": 80.0
+ },
+ {
+  "row": 153,
+  "section": "Implantology",
+  "service": "Custom healing abutment placement",
+  "code": "",
+  "price_eur": 80.0
+ },
+ {
+  "row": 154,
+  "section": "Implantology",
+  "service": "Gingival (soft-tissue) grafting around an implant",
+  "code": "",
+  "price_eur": 65.0
+ },
+ {
+  "row": 155,
+  "section": "Implantology",
+  "service": "Single-use surgical kit",
+  "code": "",
+  "price_eur": 6.17
+ },
+ {
+  "row": 156,
+  "section": "Implantology",
+  "service": "Additional local anaesthetic cartridge",
+  "code": "",
+  "price_eur": 2.19
+ },
+ {
+  "row": 157,
+  "section": "Implantology",
+  "service": "Mini-implant placement",
+  "code": "",
+  "price_eur": 35.0
+ },
+ {
+  "row": 158,
+  "section": "Implantology",
+  "service": "Multi-unit abutment placement",
+  "code": "",
+  "price_eur": 60.0
+ },
+ {
+  "row": 159,
+  "section": "Implantology",
+  "service": "Temporary prosthesis on abutments",
+  "code": "",
+  "price_eur": 230.0
+ },
+ {
+  "row": 160,
+  "section": "Implantology",
+  "service": "Zirconia prosthesis on All-on-4 implants",
+  "code": "",
+  "price_eur": 2680.0
+ },
+ {
+  "row": 161,
+  "section": "Implantology",
+  "service": "Zirconia prosthesis on All-on-6 implants",
+  "code": "",
+  "price_eur": 2890.0
+ },
+ {
+  "row": 162,
+  "section": "Implantology",
+  "service": "All-on-4 with Osstem implants",
+  "code": "",
+  "price_eur": 3920.0
+ },
+ {
+  "row": 163,
+  "section": "Implantology",
+  "service": "All-on-4 with Megagen implants",
+  "code": "",
+  "price_eur": 3500.0
+ },
+ {
+  "row": 164,
+  "section": "Implantology",
+  "service": "All-on-6 with Megagen implants",
+  "code": "",
+  "price_eur": 4500.0
+ },
+ {
+  "row": 165,
+  "section": "Implantology",
+  "service": "All-on-6 with Osstem implants",
+  "code": "",
+  "price_eur": 4330.0
+ },
+ {
+  "row": 166,
+  "section": "Implantology",
+  "service": "All-on-4 temporary prosthesis (immediate loading)",
+  "code": "",
+  "price_eur": 830.0
+ },
+ {
+  "row": 167,
+  "section": "Implantology",
+  "service": "All-on-4 temporary prosthesis (immediate loading with bar)",
+  "code": "",
+  "price_eur": 980.0
+ },
+ {
+  "row": 168,
+  "section": "Implantology",
+  "service": "All-on-6 temporary prosthesis (immediate loading)",
+  "code": "",
+  "price_eur": 930.0
+ },
+ {
+  "row": 169,
+  "section": "Implantology",
+  "service": "All-on-6 with Straumann BLX implants",
+  "code": "",
+  "price_eur": 6180.0
+ },
+ {
+  "row": 170,
+  "section": "Implantology",
+  "service": "IDR implant placement in the central incisor region with Megagen Korean implant system (guide, implant, bone grafting, gingival grafting and temporary crown)",
+  "code": "",
+  "price_eur": 1240.0
+ },
+ {
+  "row": 171,
+  "section": "Implantology",
+  "service": "Bone grafting at the time of tooth extraction",
+  "code": "",
+  "price_eur": 90.0
+ },
+ {
+  "row": 172,
+  "section": "Implantology",
+  "service": "Megagen AnyOne implant placement",
+  "code": "",
+  "price_eur": 470.0
+ },
+ {
+  "row": 173,
+  "section": "Implantology",
+  "service": "Megagen ST implant placement",
+  "code": "",
+  "price_eur": 360.0
+ },
+ {
+  "row": 174,
+  "section": "Implantology",
+  "service": "Megagen implant placement",
+  "code": "",
+  "price_eur": 570.0
+ },
+ {
+  "row": 175,
+  "section": "Implantology",
+  "service": "Megagen AnyRidge implant placement",
+  "code": "",
+  "price_eur": 570.0
+ },
+ {
+  "row": 176,
+  "section": "Implantology",
+  "service": "Zirconia implant placement",
+  "code": "",
+  "price_eur": 1140.0
+ },
+ {
+  "row": 177,
+  "section": "Implantology",
+  "service": "All-on-6 FP1 with Megagen implants",
+  "code": "",
+  "price_eur": 4950.0
+ },
+ {
+  "row": 178,
+  "section": "Implantology",
+  "service": "All-on-6 FP1 with Straumann BLX implants",
+  "code": "",
+  "price_eur": 6800.0
+ },
+ {
+  "row": 179,
+  "section": "Implantology",
+  "service": "Nobel implant placement",
+  "code": "",
+  "price_eur": 830.0
+ },
+ {
+  "row": 180,
+  "section": "Implantology",
+  "service": "Osstem SOI implant placement",
+  "code": "",
+  "price_eur": 520.0
+ },
+ {
+  "row": 181,
+  "section": "Implantology",
+  "service": "All-on-6 with Nobel implants",
+  "code": "",
+  "price_eur": 7000.0
+ },
+ {
+  "row": 182,
+  "section": "Implantology",
+  "service": "All-on-4 with Nobel implants",
+  "code": "",
+  "price_eur": 5500.0
+ },
+ {
+  "row": 183,
+  "section": "Implantology",
+  "service": "IDR implant placement in the central incisor region with Nobel Swiss implant system (guide, implant, bone grafting, gingival grafting and temporary crown)",
+  "code": "",
+  "price_eur": 1750.0
+ },
+ {
+  "row": 184,
+  "section": "Implantology",
+  "service": "Multi-unit abutment cost",
+  "code": "",
+  "price_eur": 110.0
+ },
+ {
+  "row": 185,
+  "section": "Implantology",
+  "service": "Sinus lift before placement of 3 implants",
+  "code": "",
+  "price_eur": 1030.0
+ },
+ {
+  "row": 186,
+  "section": "Implantology",
+  "service": "Sinus lift before placement of 4 implants",
+  "code": "",
+  "price_eur": 1230.0
+ },
+ {
+  "row": 187,
+  "section": "Implantology",
+  "service": "Sinus lift during placement of 4 implants",
+  "code": "",
+  "price_eur": 830.0
+ },
+ {
+  "row": 188,
+  "section": "Implantology",
+  "service": "Bone grafting with lamina during implant placement for 1–2 teeth",
+  "code": "",
+  "price_eur": 400.0
+ },
+ {
+  "row": 189,
+  "section": "Implantology",
+  "service": "Bone grafting with lamina during implant placement for 3–4 teeth",
+  "code": "",
+  "price_eur": 600.0
+ },
+ {
+  "row": 191,
+  "section": "Implant prosthetics",
+  "service": "Fabrication of a custom model",
+  "code": "",
+  "price_eur": 20.51
+ },
+ {
+  "row": 192,
+  "section": "Implant prosthetics",
+  "service": "ML zirconia crown on Osstem implant",
+  "code": "",
+  "price_eur": 360.0
+ },
+ {
+  "row": 193,
+  "section": "Implant prosthetics",
+  "service": "ML zirconia crown on Straumann implant",
+  "code": "",
+  "price_eur": 450.0
+ },
+ {
+  "row": 194,
+  "section": "Implant prosthetics",
+  "service": "ML zirconia crown on Megagen implant",
+  "code": "",
+  "price_eur": 360.0
+ },
+ {
+  "row": 195,
+  "section": "Implant prosthetics",
+  "service": "Temporary crown on implant",
+  "code": "6.22",
+  "price_eur": 50.97
+ },
+ {
+  "row": 196,
+  "section": "Implant prosthetics",
+  "service": "Immediate temporary crown on abutment (at surgery)",
+  "code": "",
+  "price_eur": 80.0
+ },
+ {
+  "row": 197,
+  "section": "Implant prosthetics",
+  "service": "Zirconia custom abutment placement",
+  "code": "",
+  "price_eur": 70.0
+ },
+ {
+  "row": 198,
+  "section": "Implant prosthetics",
+  "service": "Titanium custom abutment",
+  "code": "",
+  "price_eur": 70.0
+ },
+ {
+  "row": 199,
+  "section": "Implant prosthetics",
+  "service": "Temporary composite crown on implant",
+  "code": "",
+  "price_eur": 37.04
+ },
+ {
+  "row": 200,
+  "section": "Implant prosthetics",
+  "service": "Osstem abutment placement",
+  "code": "",
+  "price_eur": 30.76
+ },
+ {
+  "row": 201,
+  "section": "Implant prosthetics",
+  "service": "Megagen abutment placement",
+  "code": "",
+  "price_eur": 41.02
+ },
+ {
+  "row": 202,
+  "section": "Implant prosthetics",
+  "service": "Straumann abutment placement",
+  "code": "",
+  "price_eur": 61.53
+ },
+ {
+  "row": 203,
+  "section": "Implant prosthetics",
+  "service": "ST zirconia crown on Megagen implant",
+  "code": "",
+  "price_eur": 310.0
+ },
+ {
+  "row": 204,
+  "section": "Implant prosthetics",
+  "service": "ST zirconia crown on Straumann implant",
+  "code": "",
+  "price_eur": 340.0
+ },
+ {
+  "row": 205,
+  "section": "Implant prosthetics",
+  "service": "ST zirconia crown on Osstem implant",
+  "code": "",
+  "price_eur": 310.0
+ },
+ {
+  "row": 206,
+  "section": "Implant prosthetics",
+  "service": "Neodent abutment placement",
+  "code": "",
+  "price_eur": 41.02
+ },
+ {
+  "row": 207,
+  "section": "Implant prosthetics",
+  "service": "ML zirconia crown on Nobel implant",
+  "code": "",
+  "price_eur": 520.0
+ },
+ {
+  "row": 208,
+  "section": "Implant prosthetics",
+  "service": "Implant scan for crown fabrication",
+  "code": "",
+  "price_eur": 10.35
+ },
+ {
+  "row": 209,
+  "section": "Implant prosthetics",
+  "service": "Nobel abutment placement",
+  "code": "",
+  "price_eur": 110.0
+ },
+ {
+  "row": 210,
+  "section": "Implant prosthetics",
+  "service": "Immediate temporary crown on Nobel abutment (at surgery)",
+  "code": "",
+  "price_eur": 150.0
+ },
+ {
+  "row": 211,
+  "section": "Implant prosthetics",
+  "service": "Immediate temporary crown on Straumann abutment (at surgery)",
+  "code": "",
+  "price_eur": 150.0
+ },
+ {
+  "row": 213,
+  "section": "Sedation with anaesthesiologist – adults",
+  "service": "Sedation – first hour",
+  "code": "",
+  "price_eur": 179.2
+ },
+ {
+  "row": 214,
+  "section": "Sedation with anaesthesiologist – adults",
+  "service": "Sedation – each additional hour",
+  "code": "",
+  "price_eur": 79.65
+ },
+ {
+  "row": 215,
+  "section": "Sedation with anaesthesiologist – adults",
+  "service": "Sedation – each additional 30 minutes",
+  "code": "",
+  "price_eur": 39.82
+ },
+ {
+  "row": 216,
+  "section": "Sedation with anaesthesiologist – adults",
+  "service": "Anaesthesiologist support – first hour",
+  "code": "",
+  "price_eur": 99.56
+ },
+ {
+  "row": 217,
+  "section": "Sedation with anaesthesiologist – adults",
+  "service": "Anaesthesiologist support – each additional hour",
+  "code": "",
+  "price_eur": 59.73
+ }
+]

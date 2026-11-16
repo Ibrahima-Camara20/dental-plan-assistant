@@ -1,0 +1,13 @@
+{
+  "discounts": {
+    "military_30": {"label": "Military serviceman discount", "percent": 30, "applies_to": "all_lines"}
+  },
+  "sedation": {
+    "first_hour": "Sedation – first hour",
+    "additional_hour": "Sedation – each additional hour"
+  },
+  "pending_confirmation": [
+    "Implant discount (dentist to confirm with Dr. R.A.)",
+    "Doluchys programme: which procedures are covered"
+  ]
+}

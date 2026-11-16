@@ -1,0 +1,3 @@
+Calculate a treatment estimate for a military serviceman (-30%).
+Stage 1: pre-operative hygiene, use of a sterilisation pack, bone grafting in segment 1 at the price-list price of 630 EUR. Placement of four implants: sites 16, 15, 35 and 36. Sedation.
+Stage 2: calculate placement of healing abutments with a 30% discount at sites 16, 15, 35 and 36. After that, also calculate – for the serviceman – gingival grafting around each implant. In stage 2, also add the cost of placing temporary crowns on the implants.

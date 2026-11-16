@@ -1,0 +1,18 @@
+{
+  "patient_ref": "PATIENT-3",
+  "rules_applied": ["military_30"],
+  "stages": [
+    {"number": 1, "interval_after": null, "items": [
+      {"id": "s1-hyg",   "kind": "item", "text": "Pre-operative professional hygiene", "quantity": 1},
+      {"id": "s1-ster",  "kind": "item", "text": "Sterilisation pack", "quantity": 1},
+      {"id": "s1-graft", "kind": "item", "text": "Bone grafting in segment 1", "quantity": 1, "dictated_price": 630},
+      {"id": "s1-impl",  "kind": "item", "text": "Implant placement", "quantity": 4, "sites": ["16", "15", "35", "36"]},
+      {"id": "s1-sed",   "kind": "sedation", "duration_h": null}
+    ]},
+    {"number": 2, "interval_after": null, "items": [
+      {"id": "s2-heal",    "kind": "item", "text": "Healing abutment placement", "quantity": 4, "sites": ["16", "15", "35", "36"]},
+      {"id": "s2-gingiva", "kind": "item", "text": "Gingival (soft-tissue) grafting around an implant", "quantity": 4},
+      {"id": "s2-temp",    "kind": "item", "text": "Temporary crown on implant", "quantity": 4}
+    ]}
+  ]
+}
