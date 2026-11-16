@@ -1,6 +1,7 @@
 /* Conversation UI: samples, chat thread, clarification chips, live totals, PDF, approval. */
 (function () {
   const $ = (id) => document.getElementById(id);
+  const WORKER_URL = "https://yellow-sky-f2a0.ibrahima-camara.workers.dev";
 
   const SAMPLES = {
     patient3: {
@@ -27,16 +28,6 @@
     $("mic").addEventListener("click", toggleRecord);
     $("approve").addEventListener("click", approve);
     $("download").addEventListener("click", download);
-    $("saveKey").addEventListener("click", saveKey);
-    if (localStorage.getItem("dpa_key")) $("keyState").textContent = "Key saved in this browser";
-  }
-
-  function saveKey() {
-    const key = $("apiKey").value.trim();
-    if (!key) { $("keyState").textContent = "Paste a key first"; return; }
-    localStorage.setItem("dpa_key", key);
-    $("apiKey").value = "";
-    $("keyState").textContent = "Key saved in this browser";
   }
 
   function say(html, cls = "bot") {
@@ -66,10 +57,6 @@
     $("input").value = "";
     say(esc(text).replace(/\n/g, "<br>"), "me");
     if (!S.extraction) {
-      if (!localStorage.getItem("dpa_key")) {
-        say("To read a free-text dictation, paste your API key in the sidebar and save it. Or load one of the samples on the left.");
-        return;
-      }
       aiExtract(text);
       return;
     }
@@ -263,40 +250,21 @@
     renderVersions();
   }
 
-  function systemPrompt() {
-    const names = [...new Set(S.prices.map((r) => r.service))].join("\n");
-    return `You turn a dentist's dictation into a dental treatment plan. Reply with JSON only, shaped as:
-{"not_dental": false, "patient_ref": null, "rules_applied": [], "stages": [{"number": 1, "interval_after": null, "items": [{"id": "s1-1", "kind": "item", "text": "...", "quantity": 1, "dictated_price": null}, {"id": "s1-2", "kind": "sedation", "duration_h": null}]}], "questions": ["..."]}
-Rules:
-- kind "item" for a procedure. Use the closest service name from the price list below as text. Never invent prices. Set dictated_price only if the dentist states a price in EUR.
-- kind "sedation" for sedation. Set duration_h to a number of hours if stated, otherwise null.
-- rules_applied: include "military_30" only if the dentist says the patient is a military serviceman with a 30% discount.
-- Put anything missing or ambiguous (patient name, implant brand, sedation duration, unclear procedure) into "questions", as short questions for the dentist.
-- Set not_dental to true if the dictation is not about dental treatment.
-- Give every item a unique id.
-
-Price list service names:
-${names}`;
-  }
-
   async function aiExtract(text) {
-    const key = localStorage.getItem("dpa_key");
-    const model = $("model").value.trim() || "llama-3.3-70b-versatile";
     const busy = say("Reading the dictation…");
     try {
-      const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      const res = await fetch(WORKER_URL, {
         method: "POST",
-        headers: { "Authorization": "Bearer " + key, "Content-Type": "application/json" },
-        body: JSON.stringify({ model, temperature: 0, response_format: { type: "json_object" },
-          messages: [{ role: "system", content: systemPrompt() }, { role: "user", content: text }] }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text }),
       });
-      if (!res.ok) throw new Error(`API error ${res.status}`);
       const data = await res.json();
+      if (!res.ok) throw new Error(data.error || `status ${res.status}`);
       const parsed = JSON.parse(data.choices[0].message.content);
       busy.remove();
       applyAI(parsed);
     } catch (err) {
-      busy.innerHTML = `Could not read the dictation (${esc(err.message)}). Check the key and the model name, then try again.`;
+      busy.innerHTML = `Could not read the dictation (${esc(err.message)}). Please try again in a moment.`;
     }
   }
 

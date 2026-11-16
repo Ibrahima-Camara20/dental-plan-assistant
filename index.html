@@ -15,11 +15,6 @@
       <button class="side-item" data-sample="patient3">Sample: Patient 3 (military)</button>
       <div class="side-title">Versions</div>
       <ul class="versions" id="versions"><li class="muted">None yet</li></ul>
-      <div class="side-title">AI access</div>
-      <input id="apiKey" type="password" autocomplete="off" placeholder="Paste API key">
-      <input id="model" value="llama-3.3-70b-versatile" placeholder="Model name">
-      <button class="side-item" id="saveKey">Save key in this browser</button>
-      <div class="side-foot" id="keyState">No key saved</div>
       <div class="side-foot">Clinic price list in <code>data/prices.json</code></div>
     </aside>
 
@@ -32,7 +27,7 @@
         <textarea id="input" rows="2" placeholder="Type or dictate a dictation, or a correction…"></textarea>
         <button type="submit" class="send">Send</button>
       </form>
-      <p class="fine">Free-text dictation needs the AI extraction step, which is not part of this demo. Samples work fully.</p>
+      <p class="fine">Type a dictation and the assistant reads it, or load a sample from the left. Check every figure before approving.</p>
     </section>
 
     <aside class="panel">
