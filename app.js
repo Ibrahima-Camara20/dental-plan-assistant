@@ -259,7 +259,12 @@
         body: JSON.stringify({ text }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || `status ${res.status}`);
+      if (!res.ok) {
+        const detail = typeof data.error === "string"
+          ? data.error
+          : (data.error && data.error.message) || JSON.stringify(data);
+        throw new Error(`status ${res.status}: ${detail}`);
+      }
       const parsed = JSON.parse(data.choices[0].message.content);
       busy.remove();
       applyAI(parsed);
