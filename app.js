@@ -11,7 +11,7 @@
   };
 
   const S = { prices: null, rules: null, extraction: null, answers: {}, plan: null, version: 0,
-              versions: [], approved: false, pdfUrl: null, recording: false, recognizer: null, sampleKey: null };
+              versions: [], approved: false, pdfUrl: null, recording: false, recognizer: null, sampleKey: null, aiQuestions: [] };
 
   const money = (x) => x == null ? "" : x.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " EUR";
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -27,6 +27,16 @@
     $("mic").addEventListener("click", toggleRecord);
     $("approve").addEventListener("click", approve);
     $("download").addEventListener("click", download);
+    $("saveKey").addEventListener("click", saveKey);
+    if (localStorage.getItem("dpa_key")) $("keyState").textContent = "Key saved in this browser";
+  }
+
+  function saveKey() {
+    const key = $("apiKey").value.trim();
+    if (!key) { $("keyState").textContent = "Paste a key first"; return; }
+    localStorage.setItem("dpa_key", key);
+    $("apiKey").value = "";
+    $("keyState").textContent = "Key saved in this browser";
   }
 
   function say(html, cls = "bot") {
@@ -56,7 +66,11 @@
     $("input").value = "";
     say(esc(text).replace(/\n/g, "<br>"), "me");
     if (!S.extraction) {
-      say("Free-text dictation needs the AI extraction step, which is not part of this demo. Please load one of the samples on the left.");
+      if (!localStorage.getItem("dpa_key")) {
+        say("To read a free-text dictation, paste your API key in the sidebar and save it. Or load one of the samples on the left.");
+        return;
+      }
+      aiExtract(text);
       return;
     }
     say("Corrections by text need the AI step. For now, answer the questions in the thread.");
@@ -66,6 +80,7 @@
   function generate(initial) {
     S.version += 1;
     const plan = DentalEngine.build(S.extraction, S.prices, S.rules, S.answers);
+    plan.pending_confirmation = plan.pending_confirmation.concat(S.aiQuestions);
     S.plan = plan;
     S.approved = false;
 
@@ -234,7 +249,7 @@
   }
 
   function reset(keepThread) {
-    S.extraction = null; S.plan = null; S.version = 0; S.answers = {}; S.versions = []; S.approved = false; S.sampleKey = null;
+    S.extraction = null; S.plan = null; S.version = 0; S.answers = {}; S.versions = []; S.approved = false; S.sampleKey = null; S.aiQuestions = [];
     if (!keepThread) {
       $("thread").innerHTML = "";
       say("Load a sample dictation from the left, or type or dictate one below. I will build the plan and ask you about anything I cannot price with confidence.");
@@ -246,6 +261,74 @@
     $("pdfBox").innerHTML = `<div class="pdf-empty">PDF preview appears here.</div>`;
     $("approve").disabled = true; $("download").disabled = true;
     renderVersions();
+  }
+
+  function systemPrompt() {
+    const names = [...new Set(S.prices.map((r) => r.service))].join("\n");
+    return `You turn a dentist's dictation into a dental treatment plan. Reply with JSON only, shaped as:
+{"not_dental": false, "patient_ref": null, "rules_applied": [], "stages": [{"number": 1, "interval_after": null, "items": [{"id": "s1-1", "kind": "item", "text": "...", "quantity": 1, "dictated_price": null}, {"id": "s1-2", "kind": "sedation", "duration_h": null}]}], "questions": ["..."]}
+Rules:
+- kind "item" for a procedure. Use the closest service name from the price list below as text. Never invent prices. Set dictated_price only if the dentist states a price in EUR.
+- kind "sedation" for sedation. Set duration_h to a number of hours if stated, otherwise null.
+- rules_applied: include "military_30" only if the dentist says the patient is a military serviceman with a 30% discount.
+- Put anything missing or ambiguous (patient name, implant brand, sedation duration, unclear procedure) into "questions", as short questions for the dentist.
+- Set not_dental to true if the dictation is not about dental treatment.
+- Give every item a unique id.
+
+Price list service names:
+${names}`;
+  }
+
+  async function aiExtract(text) {
+    const key = localStorage.getItem("dpa_key");
+    const model = $("model").value.trim() || "llama-3.3-70b-versatile";
+    const busy = say("Reading the dictation…");
+    try {
+      const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        method: "POST",
+        headers: { "Authorization": "Bearer " + key, "Content-Type": "application/json" },
+        body: JSON.stringify({ model, temperature: 0, response_format: { type: "json_object" },
+          messages: [{ role: "system", content: systemPrompt() }, { role: "user", content: text }] }),
+      });
+      if (!res.ok) throw new Error(`API error ${res.status}`);
+      const data = await res.json();
+      const parsed = JSON.parse(data.choices[0].message.content);
+      busy.remove();
+      applyAI(parsed);
+    } catch (err) {
+      busy.innerHTML = `Could not read the dictation (${esc(err.message)}). Check the key and the model name, then try again.`;
+    }
+  }
+
+  function applyAI(p) {
+    if (p.not_dental || !Array.isArray(p.stages) || !p.stages.length) {
+      say("This does not look like a dental treatment dictation, so I cannot build a plan from it.");
+      return;
+    }
+    S.extraction = {
+      patient_ref: p.patient_ref || "PATIENT",
+      rules_applied: (p.rules_applied || []).filter((k) => S.rules.discounts[k]),
+      stages: p.stages.map((st) => ({
+        number: Number(st.number),
+        interval_after: st.interval_after || null,
+        items: (st.items || []).map((it, i) => {
+          const id = it.id || `s${st.number}-${i + 1}`;
+          if (it.kind === "sedation") return { id, kind: "sedation", duration_h: typeof it.duration_h === "number" ? it.duration_h : null };
+          return { id, kind: "item", text: String(it.text || ""), quantity: Number(it.quantity) || 1,
+                   dictated_price: typeof it.dictated_price === "number" ? it.dictated_price : null };
+        }),
+      })),
+    };
+    S.answers = {};
+    for (const st of S.extraction.stages) for (const it of st.items) {
+      if (it.kind === "sedation" && it.duration_h != null) S.answers[`${it.id}:duration`] = it.duration_h;
+    }
+    S.aiQuestions = (p.questions || []).map(String);
+    if (S.aiQuestions.length) {
+      say("<b>To confirm with the dentist:</b><ul>" + S.aiQuestions.map((q) => `<li>${esc(q)}</li>`).join("") + "</ul>");
+    }
+    say("I have read the dictation. Building the plan…");
+    generate(true);
   }
 
   init();

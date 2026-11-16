@@ -14,6 +14,8 @@ body { margin:0; font-family: Inter, system-ui, -apple-system, "Segoe UI", Robot
 .side-foot { margin-top:auto; font-size:12px; color:#8FBFB8; }
 .side-foot code { color:#BFE0DA; }
 .muted { color:#8FBFB8; }
+.side input { font:inherit; font-size:13px; padding:8px 10px; border-radius:8px; border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.06); color:#fff; width:100%; }
+.side input::placeholder { color:#8FBFB8; }
 .chat { display:flex; flex-direction:column; padding:22px 30px 16px; min-width:0; min-height:0; }
 .thread { flex:1; overflow:auto; display:flex; flex-direction:column; gap:14px; padding-right:6px; }
 .msg { max-width:640px; padding:13px 16px; border-radius:16px; font-size:15px; line-height:1.5; }
