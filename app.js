@@ -1,126 +1,138 @@
-/* UI controller: dictation, questions, PDF, approval. Depends on engine.js and jsPDF. */
+/* Conversation UI: samples, chat thread, clarification chips, live totals, PDF, approval. */
 (function () {
   const $ = (id) => document.getElementById(id);
 
   const SAMPLES = {
-    patient3: { text: null, file: "data/samples/patient3.txt", extraction: "data/extractions/patient3.json" },
+    patient3: {
+      label: "Sample: Patient 3 (military)",
+      text: "Calculate a treatment estimate for a military serviceman (-30%).\nStage 1: pre-operative hygiene, use of a sterilisation pack, bone grafting in segment 1 at the price-list price of 630 EUR. Placement of four implants: sites 16, 15, 35 and 36. Sedation.\nStage 2: calculate placement of healing abutments with a 30% discount at sites 16, 15, 35 and 36. After that, also calculate – for the serviceman – gingival grafting around each implant. In stage 2, also add the cost of placing temporary crowns on the implants.",
+      extraction: "data/extractions/patient3.json",
+    },
   };
 
   const S = { prices: null, rules: null, extraction: null, answers: {}, plan: null, version: 0,
-              history: [], approved: false, pdfBlob: null, pdfUrl: null, recognizer: null, recording: false };
+              versions: [], approved: false, pdfUrl: null, recording: false, recognizer: null, sampleKey: null };
 
   const money = (x) => x == null ? "" : x.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " EUR";
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
   async function init() {
-    const [p, r] = await Promise.all([
-      fetch("data/prices.json").then((x) => x.json()),
-      fetch("data/rules.json").then((x) => x.json()),
+    [S.prices, S.rules] = await Promise.all([
+      fetch("data/prices.json").then((r) => r.json()),
+      fetch("data/rules.json").then((r) => r.json()),
     ]);
-    S.prices = p; S.rules = r;
-    $("sample").addEventListener("change", loadSample);
-    $("build").addEventListener("click", buildPlan);
-    $("applyAnswers").addEventListener("click", applyAnswers);
-    $("new").addEventListener("click", resetAll);
-    $("record").addEventListener("click", () => toggleRecord($("record"), $("transcript"), $("recordHint")));
-    $("speakCorr").addEventListener("click", () => toggleRecord($("speakCorr"), $("correction"), null));
-    $("correction").addEventListener("input", () => { $("applyCorr").disabled = !$("correction").value.trim(); });
-    $("applyCorr").addEventListener("click", () => {
-      $("corrNote").textContent = "Free-text corrections need the AI step. For now, answer the questions above.";
-      $("corrNote").className = "warn";
-    });
+    document.querySelectorAll("[data-sample]").forEach((b) => b.addEventListener("click", () => loadSample(b.dataset.sample)));
+    $("newPlan").addEventListener("click", reset);
+    $("composer").addEventListener("submit", onSend);
+    $("mic").addEventListener("click", toggleRecord);
     $("approve").addEventListener("click", approve);
     $("download").addEventListener("click", download);
   }
 
-  async function loadSample() {
-    const key = $("sample").value;
-    if (!key) return;
-    const s = SAMPLES[key];
-    $("transcript").value = await fetch(s.file).then((x) => x.text());
-    S.extraction = await fetch(s.extraction).then((x) => x.json());
-    S.sampleKey = key;
+  function say(html, cls = "bot") {
+    const el = document.createElement("div");
+    el.className = `msg ${cls}`;
+    el.innerHTML = html;
+    $("thread").appendChild(el);
+    const t = $("thread"); t.scrollTop = t.scrollHeight;
+    return el;
   }
 
-  function buildPlan() {
+  async function loadSample(key) {
+    const s = SAMPLES[key];
+    reset(true);
+    document.querySelectorAll("[data-sample]").forEach((b) => b.classList.toggle("on", b.dataset.sample === key));
+    say(esc(s.text).replace(/\n/g, "<br>"), "me");
+    S.extraction = await fetch(s.extraction).then((r) => r.json());
+    S.sampleKey = key;
+    say("I have read the dictation. Building the plan…");
+    generate(true);
+  }
+
+  function onSend(e) {
+    e.preventDefault();
+    const text = $("input").value.trim();
+    if (!text) return;
+    $("input").value = "";
+    say(esc(text).replace(/\n/g, "<br>"), "me");
     if (!S.extraction) {
-      alert("Load a sample dictation first. Free-text dictation needs the AI extraction step, which is not included in this demo.");
+      say("Free-text dictation needs the AI extraction step, which is not part of this demo. Please load one of the samples on the left.");
       return;
     }
-    S.answers = {};
-    S.version = 0;
-    S.history = [];
-    S.approved = false;
-    generate();
+    say("Corrections by text need the AI step. For now, answer the questions in the thread.");
   }
 
-  function applyAnswers() {
-    const q = S.plan.questions;
-    const answers = { ...S.answers };
-    for (const question of q) {
-      const chosen = document.querySelector(`input[name="${CSS.escape(question.id)}"]:checked`);
-      if (!chosen) return;
-      answers[question.id] = Number(chosen.value);
-    }
-    S.answers = answers;
-    generate();
-  }
-
-  // Build the plan from the current answers, render it, and produce the PDF.
-  function generate() {
+  // Build the plan from current answers, update the thread, the totals and the PDF.
+  function generate(initial) {
     S.version += 1;
     const plan = DentalEngine.build(S.extraction, S.prices, S.rules, S.answers);
-    if (S.extraction.patient_ref && $("patient").value.trim()) plan.patient_ref = $("patient").value.trim();
     S.plan = plan;
     S.approved = false;
-    renderSummary(plan);
-    renderQuestions(plan);
+
+    const open = plan.questions.length;
+    if (open) {
+      if (initial) say(`I need <b>${open}</b> answer${open > 1 ? "s" : ""} before the PDF is final.`);
+      plan.questions.forEach((q) => renderQuestion(q));
+    } else {
+      say(`The plan is complete. Total <b>${money(plan.totals.total_eur)}</b>${plan.discount ? ` after the ${plan.discount.percent}% discount` : ""}. The PDF is on the right; approve it when you are happy.`);
+      renderSummary(plan);
+    }
+
+    renderPanel(plan);
     renderPDF(plan);
-    renderHistory(plan);
-    setButtons(plan);
+    S.versions.push({ v: S.version, status: plan.status, total: plan.totals.total_eur, approved: false });
+    renderVersions();
+  }
+
+  function renderQuestion(q) {
+    const chosen = S.answers[q.id];
+    const opts = q.options.map((o) => {
+      const sel = chosen === o.value ? " sel" : "";
+      const price = o.price_eur != null ? `<span class="p">${money(o.price_eur)}</span>` : "";
+      return `<button class="chip${sel}" data-q="${esc(q.id)}" data-v="${o.value}">${esc(o.label)} ${price}</button>`;
+    }).join("");
+    const el = say(`<div class="qtitle">${esc(q.text)}</div><div class="chips">${opts}</div>`);
+    el.querySelectorAll("button.chip").forEach((b) => b.addEventListener("click", () => answer(q.id, Number(b.dataset.v), el)));
+  }
+
+  function answer(qid, value, bubble) {
+    S.answers[qid] = value;
+    bubble.querySelectorAll("button.chip").forEach((b) => {
+      b.classList.toggle("sel", Number(b.dataset.v) === value);
+      b.disabled = true;
+    });
+    const open = S.plan.questions.filter((q) => !(q.id in S.answers)).length;
+    if (open === 0) {
+      say("Thanks. Regenerating the plan…");
+      generate(false);
+    } else {
+      say(`Noted. ${open} question${open > 1 ? "s" : ""} left.`);
+    }
   }
 
   function renderSummary(plan) {
-    const rows = plan.stages.map((st) => {
-      const body = st.lines.map((l) => `
-        <tr class="${l.status === "pending" ? "pend" : ""}">
-          <td>${escapeHtml(l.description)}${l.status === "pending" ? " <i>(pending)</i>" : ""}</td>
-          <td class="num">${l.quantity ?? ""}</td>
-          <td class="num">${money(l.unit_price_eur)}</td>
-          <td class="num">${money(l.subtotal_eur)}</td></tr>`).join("");
-      return `<h4 class="sub" style="margin:12px 0 6px">Stage ${st.number}</h4>
-        <table class="tbl"><tr><th>Procedure</th><th class="num">Qty</th><th class="num">Unit</th><th class="num">Subtotal</th></tr>${body}</table>
-        <p class="muted">Stage total ${money(st.total_eur)} (after ${plan.discount ? plan.discount.percent + "%" : "no"} discount)</p>`;
-    }).join("");
-    $("planSummary").innerHTML = rows + `<p><b>Total ${money(plan.totals.total_eur)}</b>${plan.questions.length ? " <span class=\"warn\">(pending lines excluded)</span>" : ""}</p>`;
+    const rows = plan.stages.map((st) => `
+      <tr><th colspan="2">Stage ${st.number}</th></tr>
+      ${st.lines.map((l) => `<tr><td>${esc(l.description)} × ${l.quantity}</td><td class="n">${money(l.subtotal_eur)}</td></tr>`).join("")}
+      <tr><td><b>Stage ${st.number} total</b></td><td class="n"><b>${money(st.total_eur)}</b></td></tr>`).join("");
+    say(`<table class="sum">${rows}</table>`);
   }
 
-  function renderQuestions(plan) {
-    const box = $("questions");
-    if (!plan.questions.length) {
-      box.innerHTML = `<p class="muted">No open questions. The plan is complete.</p>`;
-      $("applyAnswers").disabled = true;
-      return;
-    }
-    box.innerHTML = `<h3 class="sub">Questions for the dentist</h3>` + plan.questions.map((q) => `
-      <div class="q"><p><b>${escapeHtml(q.text)}</b></p>
-        ${q.options.map((o, i) => `
-          <label class="opt"><input type="radio" name="${escapeHtml(q.id)}" value="${o.value}" ${i === 0 ? "" : ""}>
-            <span>${escapeHtml(o.label)}${o.price_eur != null ? ` <span class="price">&middot; ${money(o.price_eur)}</span>` : ""}${o.note ? ` <span class="price">&middot; ${escapeHtml(o.note)}</span>` : ""}</span>
-          </label>`).join("")}
-      </div>`).join("");
-    box.querySelectorAll("input[type=radio]").forEach((r) => r.addEventListener("change", () => {
-      const allChosen = S.plan.questions.every((q) => document.querySelector(`input[name="${CSS.escape(q.id)}"]:checked`));
-      $("applyAnswers").disabled = !allChosen;
-    }));
-    $("applyAnswers").disabled = true;
+  function renderPanel(plan) {
+    const open = plan.questions.length;
+    $("total").textContent = money(plan.totals.total_eur);
+    $("totalSub").textContent = open ? `Pending lines excluded. ${open} question${open > 1 ? "s" : ""} open.` : (plan.discount ? `After ${plan.discount.percent}% ${plan.discount.label.toLowerCase()}.` : "Final.");
+    $("pill").textContent = open ? `${open} question${open > 1 ? "s" : ""} open` : "Ready for review";
+    $("pill").className = "pill " + (open ? "open" : "ok");
+    $("approve").disabled = open > 0;
+    $("download").disabled = true;
   }
 
   function renderPDF(plan) {
     const doc = makePDF(plan, S.version);
-    S.pdfBlob = doc.output("blob");
     if (S.pdfUrl) URL.revokeObjectURL(S.pdfUrl);
-    S.pdfUrl = URL.createObjectURL(S.pdfBlob);
-    $("pdfBox").innerHTML = `<iframe id="pdfFrame" src="${S.pdfUrl}" title="Treatment plan PDF"></iframe>`;
+    S.pdfUrl = URL.createObjectURL(doc.output("blob"));
+    $("pdfBox").innerHTML = `<iframe src="${S.pdfUrl}" title="Treatment plan PDF"></iframe>`;
   }
 
   function makePDF(plan, version) {
@@ -172,27 +184,20 @@
     return doc;
   }
 
-  function renderHistory(plan) {
-    S.history.push({ v: S.version, status: plan.status, total: plan.totals.total_eur, approved: false });
-    $("history").innerHTML = S.history.map((h) =>
-      `<li>v${h.v} &middot; ${escapeHtml(h.status)} &middot; ${money(h.total)}${h.approved ? " &middot; <b>approved</b>" : ""}</li>`).reverse().join("");
-  }
-
-  function setButtons(plan) {
-    const complete = plan.questions.length === 0;
-    $("approve").disabled = !complete;
-    $("download").disabled = true;
-    $("send").disabled = true;
-    $("badge").textContent = complete ? "Ready for review" : "Draft";
+  function renderVersions() {
+    $("versions").innerHTML = S.versions.map((v) =>
+      `<li>v${v.v} · ${esc(v.status)} · ${money(v.total)}${v.approved ? " · <b>approved</b>" : ""}</li>`).reverse().join("")
+      || `<li class="muted">None yet</li>`;
   }
 
   function approve() {
+    if (!S.plan || S.plan.questions.length) return;
     S.approved = true;
-    S.history[S.history.length - 1].approved = true;
-    $("history").innerHTML = S.history.map((h) =>
-      `<li>v${h.v} &middot; ${escapeHtml(h.status)} &middot; ${money(h.total)}${h.approved ? " &middot; <b>approved</b>" : ""}</li>`).reverse().join("");
+    S.versions[S.versions.length - 1].approved = true;
+    renderVersions();
     $("download").disabled = false;
-    $("badge").textContent = "Approved";
+    $("pill").textContent = "Approved";
+    say(`Version ${S.version} approved. You can download the PDF.`);
   }
 
   function download() {
@@ -202,50 +207,45 @@
     a.click();
   }
 
-  function toggleRecord(btn, target, hint) {
+  function toggleRecord() {
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) {
-      alert("Speech recognition is not available in this browser. Use Chrome or Edge, or type the text.");
-      return;
-    }
+    if (!SR) { alert("Speech recognition is not available in this browser. Use Chrome or Edge, or type the text."); return; }
     if (S.recording) {
       S.recognizer && S.recognizer.stop();
       S.recording = false;
-      btn.classList.remove("on");
-      btn.innerHTML = btn.id === "record" ? "&#9679; Record" : "&#9679; Speak";
+      $("mic").classList.remove("on");
+      $("mic").innerHTML = "&#9679; Record";
       return;
     }
     const rec = new SR();
-    rec.lang = $("lang").value;
+    rec.lang = "en-US";
     rec.continuous = true;
     rec.interimResults = false;
     rec.onresult = (e) => {
       for (let i = e.resultIndex; i < e.results.length; i++) {
-        if (e.results[i].isFinal) target.value += (target.value ? " " : "") + e.results[i][0].transcript.trim();
+        if (e.results[i].isFinal) $("input").value += (($("input").value ? " " : "") + e.results[i][0].transcript.trim());
       }
-      target.dispatchEvent(new Event("input"));
     };
     rec.onend = () => { if (S.recording) rec.start(); };
     rec.start();
     S.recognizer = rec; S.recording = true;
-    btn.classList.add("on");
-    btn.innerHTML = "&#9632; Stop";
-    if (hint) hint.textContent = "Listening… click Stop when you are done.";
+    $("mic").classList.add("on");
+    $("mic").innerHTML = "&#9632; Stop";
   }
 
-  function resetAll() {
-    S.extraction = null; S.plan = null; S.version = 0; S.history = []; S.answers = {}; S.approved = false;
-    $("transcript").value = ""; $("sample").value = ""; $("patient").value = "";
-    $("planSummary").innerHTML = `<p class="muted">No plan yet. Dictate or load a sample, then build.</p>`;
-    $("questions").innerHTML = ""; $("applyAnswers").disabled = true;
-    $("pdfBox").innerHTML = `<div class="pdfEmpty">The PDF preview appears here.</div>`;
-    $("history").innerHTML = `<li class="muted">No versions yet.</li>`;
-    $("approve").disabled = true; $("download").disabled = true; $("send").disabled = true;
-    $("badge").textContent = "Draft";
-  }
-
-  function escapeHtml(s) {
-    return String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  function reset(keepThread) {
+    S.extraction = null; S.plan = null; S.version = 0; S.answers = {}; S.versions = []; S.approved = false; S.sampleKey = null;
+    if (!keepThread) {
+      $("thread").innerHTML = "";
+      say("Load a sample dictation from the left, or type or dictate one below. I will build the plan and ask you about anything I cannot price with confidence.");
+    }
+    document.querySelectorAll("[data-sample]").forEach((b) => b.classList.remove("on"));
+    $("total").textContent = "–";
+    $("totalSub").textContent = "Totals update as you answer.";
+    $("pill").textContent = "No plan"; $("pill").className = "pill";
+    $("pdfBox").innerHTML = `<div class="pdf-empty">PDF preview appears here.</div>`;
+    $("approve").disabled = true; $("download").disabled = true;
+    renderVersions();
   }
 
   init();

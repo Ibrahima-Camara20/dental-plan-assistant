@@ -2,86 +2,49 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <link rel="icon" href="data:,">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
   <title>Dental Plan Assistant</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="topbar">
-    <div class="brand">Dental Plan Assistant <span>&middot; dictation to patient-ready treatment plan</span></div>
-    <nav class="steps">
-      <a href="#col1">Dictate</a><a href="#col2">Clarify</a><a href="#col3">Review PDF</a><a href="#col3">Approve</a>
-    </nav>
-    <span id="badge" class="badge">Draft</span>
-  </header>
+  <div class="app">
+    <aside class="side">
+      <div class="brand">Dental Plan Assistant</div>
+      <button class="side-item on" id="newPlan">+ New treatment plan</button>
+      <button class="side-item" data-sample="patient3">Sample: Patient 3 (military)</button>
+      <div class="side-title">Versions</div>
+      <ul class="versions" id="versions"><li class="muted">None yet</li></ul>
+      <div class="side-foot">Clinic price list in <code>data/prices.json</code></div>
+    </aside>
 
-  <main class="grid">
-    <!-- 1. Dictation -->
-    <section class="card" id="col1">
-      <h2>1 &middot; Dictation</h2>
-      <div class="row2">
-        <label>Patient name (optional)<input id="patient" placeholder="e.g. Jane Doe"></label>
-        <label>Dentist<input id="dentist" value="Dr. R.A."></label>
+    <section class="chat">
+      <div class="thread" id="thread">
+        <div class="msg bot">Hello. Load a sample dictation from the left, or type or dictate one below. I will build the plan and ask you about anything I cannot price with confidence.</div>
       </div>
-      <div class="row2">
-        <label>Clinic<input id="clinic" value="Smile Clinic Paris"></label>
-        <label>Speech language
-          <select id="lang">
-            <option value="en-US">English</option>
-            <option value="fr-FR">Français</option>
-            <option value="uk-UA">Українська</option>
-          </select>
-        </label>
-      </div>
-      <div class="recordrow">
-        <button id="record" class="btn rec">&#9679; Record</button>
-        <p class="hint" id="recordHint">Click Record and speak. The transcript appears live and stays editable.</p>
-      </div>
-      <textarea id="transcript" placeholder="Dictated transcript... Or load a sample dictation below."></textarea>
-      <div class="row2">
-        <select id="sample">
-          <option value="">Load a sample dictation</option>
-          <option value="patient3">Patient 3 &ndash; military serviceman (&minus;30%)</option>
-        </select>
-        <button id="new" class="btn ghost">New plan</button>
-      </div>
-      <button id="build" class="btn primary wide">Build plan &amp; PDF</button>
-      <p class="note" id="dictNote">This public demo builds plans from the sample dictations. Free-text dictation needs the AI extraction step, which is not included yet.</p>
+      <form class="composer" id="composer">
+        <button type="button" class="mic" id="mic" title="Dictate">&#9679; Record</button>
+        <textarea id="input" rows="2" placeholder="Type or dictate a dictation, or a correction…"></textarea>
+        <button type="submit" class="send">Send</button>
+      </form>
+      <p class="fine">Free-text dictation needs the AI extraction step, which is not part of this demo. Samples work fully.</p>
     </section>
 
-    <!-- 2. Plan & questions -->
-    <section class="card" id="col2">
-      <h2>2 &middot; Plan &amp; clarifying questions</h2>
-      <div id="planSummary"><p class="muted">No plan yet. Dictate or load a sample, then build.</p></div>
-      <div id="questions"></div>
-      <button id="applyAnswers" class="btn primary wide" disabled>Apply answers &amp; regenerate PDF</button>
-
-      <h3 class="sub">Corrections (voice or text)</h3>
-      <div class="row2">
-        <button id="speakCorr" class="btn rec small">&#9679; Speak</button>
-        <input id="correction" placeholder='e.g. "Change the price of the implant to 1200 EUR"'>
+    <aside class="panel">
+      <div class="panel-head">
+        <span class="label">Live plan</span>
+        <span class="pill" id="pill">No plan</span>
       </div>
-      <button id="applyCorr" class="btn ghost wide" disabled>Apply correction &amp; regenerate</button>
-      <p class="note" id="corrNote">Free-text corrections need the AI step. For now, answer the questions above.</p>
-    </section>
-
-    <!-- 3. Review & approve -->
-    <section class="card" id="col3">
-      <h2>3 &middot; Review &amp; approve</h2>
-      <div id="pdfBox"><div class="pdfEmpty">The PDF preview appears here.</div></div>
-      <div class="row3">
-        <button id="approve" class="btn primary" disabled>Approve</button>
-        <button id="download" class="btn ghost" disabled>Download PDF</button>
-        <button id="send" class="btn ghost" disabled title="Needs a back end; not available in this demo">Send to patient</button>
+      <div class="total" id="total">&ndash;</div>
+      <div class="total-sub" id="totalSub">Totals update as you answer.</div>
+      <div class="pdf" id="pdfBox"><div class="pdf-empty">PDF preview appears here.</div></div>
+      <div class="actions">
+        <button class="btn ghost" id="download" disabled>Download PDF</button>
+        <button class="btn" id="approve" disabled>Approve plan</button>
       </div>
-      <p class="note">&#128274; Download unlocks only after explicit dentist approval of the latest version. Sending is not available in this demo.</p>
-      <h3 class="sub">Version history</h3>
-      <ul id="history" class="history"><li class="muted">No versions yet.</li></ul>
-    </section>
-  </main>
-
-  <footer class="foot">Prototype for a class project. Prices and procedures come from the clinic price list; totals are computed by code, not by the model.</footer>
+      <p class="fine">Download unlocks after approval. Sending to the patient needs a back end.</p>
+    </aside>
+  </div>
 
   <script src="vendor/jspdf.umd.min.js"></script>
   <script src="engine.js"></script>
