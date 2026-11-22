@@ -137,51 +137,143 @@
     $("pdfBox").innerHTML = `<iframe src="${S.pdfUrl}" title="Treatment plan PDF"></iframe>`;
   }
 
-  function makePDF(plan, version) {
+    function makePDF(plan, version) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ unit: "mm", format: "a4" });
-    const L = 18, R = 192;
-    let y = 18;
-    const need = (h) => { if (y + h > 280) { doc.addPage(); y = 18; } };
+    const L = 16, R = 194;
+    const INK = [22, 32, 40], MUTED = [110, 120, 128], TEAL = [11, 110, 96];
+    const TEAL_BG = [228, 242, 238], LINE = [218, 223, 228];
+    const AMBER = [154, 90, 10], AMBER_BG = [253, 243, 224];
+    const BOTTOM = 270;
+    const open = plan.questions.length;
+    const today = new Date().toLocaleDateString("en-GB");
+    const money2 = (v) => money(v);
+    let y = 0;
 
-    doc.setFont("helvetica", "bold"); doc.setFontSize(15);
-    doc.text(`Treatment plan – ${plan.patient_ref} – version ${version}`, L, y); y += 7;
-    doc.setFont("helvetica", "normal"); doc.setFontSize(10);
-    doc.text(`Status: ${plan.status}`, L, y); y += 8;
+    const text = (s, x, yy, o) => doc.text(s, x, yy, o || {});
+    const setInk = () => doc.setTextColor(...INK);
+    const newPage = () => { doc.addPage(); y = 20; };
+    const need = (h) => { if (y + h > BOTTOM) newPage(); };
+
+    // Header band (first page only)
+    doc.setFillColor(...TEAL); doc.rect(0, 0, 210, 28, "F");
+    doc.setTextColor(255, 255, 255);
+    doc.setFont("helvetica", "bold"); doc.setFontSize(16);
+    text("Dental treatment plan", L, 12);
+    doc.setFont("helvetica", "normal"); doc.setFontSize(9);
+    text(`Patient ${plan.patient_ref}   ·   Version ${version}   ·   ${today}`, L, 20);
+
+    // Status pill
+    y = 40;
+    const label = open
+      ? `Draft · ${open} question${open > 1 ? "s" : ""} open`
+      : "Final";
+    doc.setFont("helvetica", "bold"); doc.setFontSize(9);
+    const pillW = doc.getTextWidth(label) + 8;
+    doc.setFillColor(...(open ? AMBER_BG : TEAL_BG));
+    doc.roundedRect(L, y - 4.5, pillW, 6.5, 2, 2, "F");
+    doc.setTextColor(...(open ? AMBER : TEAL));
+    text(label, L + 4, y);
+    y += 10;
 
     for (const st of plan.stages) {
-      need(16);
-      doc.setFont("helvetica", "bold"); doc.setFontSize(11);
-      doc.text(`Stage ${st.number}`, L, y); y += 6;
-      doc.setFont("helvetica", "normal"); doc.setFontSize(9.5);
+      need(30);
+      // Stage bar
+      doc.setFillColor(...TEAL_BG); doc.rect(L, y - 5.5, R - L, 8, "F");
+      doc.setFont("helvetica", "bold"); doc.setFontSize(10.5); setInk();
+      text(`Stage ${st.number}`, L + 3, y);
+      text(money2(st.total_eur), R - 3, y, { align: "right" });
+      y += 7;
+
+      // Column headers
+      doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(...MUTED);
+      text("Treatment", L + 3, y);
+      text("Qty", 126, y, { align: "right" });
+      text("Unit price", 158, y, { align: "right" });
+      text("Amount", R - 3, y, { align: "right" });
+      y += 2;
+      doc.setDrawColor(...LINE); doc.line(L, y, R, y);
+      y += 4.5;
+
+      // Lines
+      doc.setFontSize(9.5);
       for (const l of st.lines) {
-        const desc = doc.splitTextToSize(l.description + (l.status === "pending" ? " (pending)" : ""), 110);
-        need(desc.length * 4.5 + 1);
-        doc.text(desc, L, y);
-        if (l.quantity != null) doc.text(String(l.quantity), 139, y, { align: "right" });
-        if (l.unit_price_eur != null) doc.text(money(l.unit_price_eur), 167, y, { align: "right" });
-        if (l.subtotal_eur != null) doc.text(money(l.subtotal_eur), R, y, { align: "right" });
-        y += desc.length * 4.5;
+        const pending = l.status === "pending";
+        const desc = doc.splitTextToSize(l.description + (pending ? " (pending)" : ""), 102);
+        const rowH = Math.max(6, desc.length * 4.6 + 1.6);
+        need(rowH);
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(...(pending ? AMBER : INK));
+        text(desc, L + 3, y);
+        setInk();
+        if (l.quantity != null) text(String(l.quantity), 126, y, { align: "right" });
+        if (l.unit_price_eur != null) text(money2(l.unit_price_eur), 158, y, { align: "right" });
+        if (l.subtotal_eur != null) text(money2(l.subtotal_eur), R - 3, y, { align: "right" });
+        doc.setDrawColor(...LINE); doc.line(L, y + 1.8, R, y + 1.8);
+        y += rowH;
       }
-      need(12);
-      y += 2; doc.setFont("helvetica", "italic");
-      doc.text(`Stage subtotal ${money(st.subtotal_eur)}; discount ${money(st.discount_eur)}; stage total ${money(st.total_eur)}`, L, y);
-      doc.setFont("helvetica", "normal"); y += 9;
+
+      // Stage discount and total
+      need(14);
+      y += 1;
+      doc.setFontSize(9.5);
+      if (st.discount_eur > 0) {
+        setInk(); doc.setFont("helvetica", "normal");
+        text(`Discount${plan.discount ? ` (${plan.discount.label})` : ""}`, L + 3, y);
+        text(`-${money2(st.discount_eur)}`, R - 3, y, { align: "right" });
+        y += 5;
+      }
+      setInk(); doc.setFont("helvetica", "bold");
+      text(`Stage ${st.number} total`, L + 3, y);
+      text(money2(st.total_eur), R - 3, y, { align: "right" });
+      y += 11;
     }
 
-    need(30);
-    doc.setFont("helvetica", "bold"); doc.setFontSize(11); doc.text("Total", L, y); y += 6;
-    doc.setFont("helvetica", "normal"); doc.setFontSize(10);
-    doc.text(`Subtotal ${money(plan.totals.subtotal_eur)}`, L, y); y += 5;
-    if (plan.discount) { doc.text(`${plan.discount.label}: -${plan.discount.percent}% (-${money(plan.totals.discount_eur)})`, L, y); y += 5; }
-    doc.setFont("helvetica", "bold");
-    doc.text(`Total ${money(plan.totals.total_eur)}${plan.questions.length ? " (pending lines excluded)" : ""}`, L, y); y += 8;
+    // Summary box
+    need(46);
+    const boxX = 96, boxW = R - boxX;
+    const boxTop = y;
+    let sy = y + 8;
+    const sumRow = (lbl, val, bold) => {
+      doc.setFont("helvetica", bold ? "bold" : "normal");
+      doc.setFontSize(bold ? 12 : 9.5); setInk();
+      text(lbl, boxX + 4, sy);
+      text(val, R - 4, sy, { align: "right" });
+      sy += bold ? 5 : 6;
+    };
+    sumRow("Subtotal", money2(plan.totals.subtotal_eur), false);
+    if (plan.discount) sumRow(`Discount (-${plan.discount.percent}%)`, `-${money2(plan.totals.discount_eur)}`, false);
+    sy += 1; doc.setDrawColor(...LINE); doc.line(boxX + 4, sy, R - 4, sy);
+    sy += 6;
+    sumRow("Total", money2(plan.totals.total_eur), true);
+    doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(...MUTED);
+    text(open ? "Excludes pending lines until the questions are answered." : "All lines priced.", boxX + 4, sy + 1);
+    sy += 3;
+    doc.setDrawColor(...LINE); doc.roundedRect(boxX, boxTop, boxW, sy + 4 - boxTop, 2, 2, "S");
+    y = sy + 12;
 
+    // To be confirmed
     if (plan.pending_confirmation.length) {
-      need(20);
-      doc.setFont("helvetica", "bold"); doc.setFontSize(11); doc.text("To be confirmed", L, y); y += 6;
-      doc.setFont("helvetica", "normal"); doc.setFontSize(10);
-      for (const p of plan.pending_confirmation) { doc.text("• " + p, L, y); y += 5; }
+      const items = plan.pending_confirmation.map((p) => doc.splitTextToSize("• " + p, R - L - 10));
+      const h = 12 + items.reduce((a, it) => a + it.length * 4.6 + 1.5, 0);
+      need(h);
+      doc.setFillColor(...AMBER_BG); doc.roundedRect(L, y, R - L, h, 2, 2, "F");
+      doc.setFont("helvetica", "bold"); doc.setFontSize(10); doc.setTextColor(...AMBER);
+      text("To be confirmed", L + 4, y + 6);
+      let iy = y + 12;
+      doc.setFont("helvetica", "normal"); doc.setFontSize(9.5); setInk();
+      for (const it of items) { text(it, L + 4, iy); iy += it.length * 4.6 + 1.5; }
+      y += h + 6;
+    }
+
+    // Footer on every page
+    const pages = doc.getNumberOfPages();
+    for (let i = 1; i <= pages; i++) {
+      doc.setPage(i);
+      doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(...MUTED);
+      doc.setDrawColor(...LINE); doc.line(L, 282, R, 282);
+      text("Estimate · subject to dentist confirmation", L, 287);
+      text(`Page ${i} of ${pages}`, R, 287, { align: "right" });
     }
     return doc;
   }
