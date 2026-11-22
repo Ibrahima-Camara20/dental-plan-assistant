@@ -2,6 +2,7 @@
 (function () {
   const $ = (id) => document.getElementById(id);
   const WORKER_URL = "https://yellow-sky-f2a0.ibrahima-camara.workers.dev";
+  const CONFIRM = "confirm"; // same value as DentalEngine.CONFIRM
 
   const SAMPLES = {
     patient3: {
@@ -12,10 +13,12 @@
   };
 
   const S = { prices: null, rules: null, extraction: null, answers: {}, plan: null, version: 0,
-              versions: [], approved: false, pdfUrl: null, recording: false, recognizer: null, sampleKey: null, aiQuestions: [] };
+              versions: [], approved: false, pdfUrl: null, recording: false, recognizer: null, sampleKey: null, aiQuestions: [],
+              details: { clinic: "", doctor: "", patient: "", lang: "en" } };
 
   const money = (x) => x == null ? "" : x.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " EUR";
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const parseVal = (raw) => (raw === CONFIRM ? raw : Number(raw));
 
   async function init() {
     [S.prices, S.rules] = await Promise.all([
@@ -28,6 +31,28 @@
     $("mic").addEventListener("click", toggleRecord);
     $("approve").addEventListener("click", approve);
     $("download").addEventListener("click", download);
+    ["clinicName", "doctorName", "patientName", "lang"].forEach((id) => $(id).addEventListener("input", onDetails));
+    S.details = currentDetails();
+  }
+
+  function currentDetails() {
+    return {
+      clinic: $("clinicName").value.trim(),
+      doctor: $("doctorName").value.trim(),
+      patient: $("patientName").value.trim(),
+      lang: $("lang").value === "fr" ? "fr" : "en",
+    };
+  }
+
+  // Changing the header or the language changes the PDF, so it must be approved again.
+  function onDetails() {
+    S.details = currentDetails();
+    if (!S.plan) return;
+    S.approved = false;
+    if (S.versions.length) S.versions[S.versions.length - 1].approved = false;
+    renderVersions();
+    renderPanel(S.plan);
+    renderPDF(S.plan);
   }
 
   function say(html, cls = "bot") {
@@ -68,6 +93,7 @@
     S.version += 1;
     const plan = DentalEngine.build(S.extraction, S.prices, S.rules, S.answers);
     plan.pending_confirmation = plan.pending_confirmation.concat(S.aiQuestions);
+    plan.pending_confirmation_fr = plan.pending_confirmation_fr.concat(S.aiQuestions);
     S.plan = plan;
     S.approved = false;
 
@@ -76,7 +102,10 @@
       if (initial) say(`I need <b>${open}</b> answer${open > 1 ? "s" : ""} before the PDF is final.`);
       plan.questions.forEach((q) => renderQuestion(q));
     } else {
-      say(`The plan is complete. Total <b>${money(plan.totals.total_eur)}</b>${plan.discount ? ` after the ${plan.discount.percent}% discount` : ""}. The PDF is on the right; approve it when you are happy.`);
+      const note = plan.pending_lines
+        ? `${plan.pending_lines} line${plan.pending_lines > 1 ? "s are" : " is"} marked to confirm with the dentist and stay out of the total.`
+        : "The PDF is on the right; approve it when you are happy.";
+      say(`The plan is complete. Total <b>${money(plan.totals.total_eur)}</b>${plan.discount ? ` after the ${plan.discount.percent}% discount` : ""}. ${note}`);
       renderSummary(plan);
     }
 
@@ -91,16 +120,16 @@
     const opts = q.options.map((o) => {
       const sel = chosen === o.value ? " sel" : "";
       const price = o.price_eur != null ? `<span class="p">${money(o.price_eur)}</span>` : "";
-      return `<button class="chip${sel}" data-q="${esc(q.id)}" data-v="${o.value}">${esc(o.label)} ${price}</button>`;
+      return `<button class="chip${sel}" data-q="${esc(q.id)}" data-v="${esc(String(o.value))}">${esc(o.label)} ${price}</button>`;
     }).join("");
     const el = say(`<div class="qtitle">${esc(q.text)}</div><div class="chips">${opts}</div>`);
-    el.querySelectorAll("button.chip").forEach((b) => b.addEventListener("click", () => answer(q.id, Number(b.dataset.v), el)));
+    el.querySelectorAll("button.chip").forEach((b) => b.addEventListener("click", () => answer(q.id, parseVal(b.dataset.v), el)));
   }
 
   function answer(qid, value, bubble) {
     S.answers[qid] = value;
     bubble.querySelectorAll("button.chip").forEach((b) => {
-      b.classList.toggle("sel", Number(b.dataset.v) === value);
+      b.classList.toggle("sel", parseVal(b.dataset.v) === value);
       b.disabled = true;
     });
     const open = S.plan.questions.filter((q) => !(q.id in S.answers)).length;
@@ -122,32 +151,73 @@
 
   function renderPanel(plan) {
     const open = plan.questions.length;
+    const toConfirm = !open && plan.pending_lines > 0;
+    const blocked = open > 0 || plan.pending_lines > 0;
     $("total").textContent = money(plan.totals.total_eur);
-    $("totalSub").textContent = open ? `Pending lines excluded. ${open} question${open > 1 ? "s" : ""} open.` : (plan.discount ? `After ${plan.discount.percent}% ${plan.discount.label.toLowerCase()}.` : "Final.");
-    $("pill").textContent = open ? `${open} question${open > 1 ? "s" : ""} open` : "Ready for review";
-    $("pill").className = "pill " + (open ? "open" : "ok");
-    $("approve").disabled = open > 0;
-    $("download").disabled = true;
+    $("totalSub").textContent = open
+      ? `Pending lines excluded. ${open} question${open > 1 ? "s" : ""} open.`
+      : toConfirm
+        ? `${plan.pending_lines} line${plan.pending_lines > 1 ? "s" : ""} waiting for the dentist, excluded from the total.`
+        : (plan.discount ? `After ${plan.discount.percent}% ${plan.discount.label.toLowerCase()}.` : "Final.");
+    $("pill").textContent = open
+      ? `${open} question${open > 1 ? "s" : ""} open`
+      : toConfirm ? "To confirm" : (S.approved ? "Approved" : "Ready for review");
+    $("pill").className = "pill " + (blocked ? "open" : "ok");
+    $("approve").disabled = blocked || S.approved;
+    $("download").disabled = !S.approved;
   }
 
   function renderPDF(plan) {
-    const doc = makePDF(plan, S.version);
+    const doc = makePDF(plan, S.version, S.details);
     if (S.pdfUrl) URL.revokeObjectURL(S.pdfUrl);
     S.pdfUrl = URL.createObjectURL(doc.output("blob"));
     $("pdfBox").innerHTML = `<iframe src="${S.pdfUrl}" title="Treatment plan PDF"></iframe>`;
   }
 
-    function makePDF(plan, version) {
+  const LABELS = {
+    en: {
+      title: "Dental treatment plan", patient: "Patient", dentist: "Dentist", version: "Version",
+      final: "Final", draft: (n) => `Draft · ${n} question${n > 1 ? "s" : ""} open`,
+      toConfirm: "Draft · to confirm with dentist",
+      stage: "Stage", stageTotal: (n) => `Stage ${n} total`,
+      treatment: "Treatment", qty: "Qty", unit: "Unit price", amount: "Amount",
+      discount: "Discount", subtotal: "Subtotal", total: "Total",
+      excludes: "Excludes pending lines until confirmed.", allPriced: "All lines priced.",
+      pending: "(pending)", toBeConfirmed: "To be confirmed",
+      footer: "Estimate · subject to dentist confirmation", page: (i, n) => `Page ${i} of ${n}`,
+      locale: "en-GB", numLocale: "en-US",
+    },
+    fr: {
+      title: "Plan de traitement dentaire", patient: "Patient", dentist: "Dentiste", version: "Version",
+      final: "Final", draft: (n) => `Brouillon · ${n} question${n > 1 ? "s" : ""} en attente`,
+      toConfirm: "Brouillon · à confirmer avec le dentiste",
+      stage: "Étape", stageTotal: (n) => `Total étape ${n}`,
+      treatment: "Acte", qty: "Qté", unit: "Prix unitaire", amount: "Montant",
+      discount: "Remise", subtotal: "Sous-total", total: "Total",
+      excludes: "Hors lignes en attente jusqu'à confirmation.", allPriced: "Toutes les lignes sont chiffrées.",
+      pending: "(en attente)", toBeConfirmed: "À confirmer",
+      footer: "Estimation · sous réserve de confirmation par le dentiste", page: (i, n) => `Page ${i} sur ${n}`,
+      locale: "fr-FR", numLocale: "fr-FR",
+    },
+  };
+
+  function makePDF(plan, version, details = {}) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ unit: "mm", format: "a4" });
+    const lang = details.lang === "fr" ? "fr" : "en";
+    const T = LABELS[lang];
     const L = 16, R = 194;
     const INK = [22, 32, 40], MUTED = [110, 120, 128], TEAL = [11, 110, 96];
     const TEAL_BG = [228, 242, 238], LINE = [218, 223, 228];
     const AMBER = [154, 90, 10], AMBER_BG = [253, 243, 224];
     const BOTTOM = 270;
     const open = plan.questions.length;
-    const today = new Date().toLocaleDateString("en-GB");
-    const money2 = (v) => money(v);
+    const toConfirm = !open && plan.pending_lines > 0;
+    const patient = details.patient || plan.patient_ref;
+    const today = new Date().toLocaleDateString(T.locale);
+    const money2 = (v) => v == null ? ""
+      : v.toLocaleString(T.numLocale, { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(/[  ]/g, " ") + " EUR";
+    const discountLabel = plan.discount ? (lang === "fr" ? plan.discount.label_fr : plan.discount.label) : "";
     let y = 0;
 
     const text = (s, x, yy, o) => doc.text(s, x, yy, o || {});
@@ -159,20 +229,23 @@
     doc.setFillColor(...TEAL); doc.rect(0, 0, 210, 28, "F");
     doc.setTextColor(255, 255, 255);
     doc.setFont("helvetica", "bold"); doc.setFontSize(16);
-    text("Dental treatment plan", L, 12);
+    text(T.title, L, 12);
+    if (details.clinic) { doc.setFontSize(11); text(details.clinic, R, 12, { align: "right" }); }
+    const meta = [`${T.patient}: ${patient}`];
+    if (details.doctor) meta.push(`${T.dentist}: ${details.doctor}`);
+    meta.push(`${T.version} ${version}`, today);
     doc.setFont("helvetica", "normal"); doc.setFontSize(9);
-    text(`Patient ${plan.patient_ref}   ·   Version ${version}   ·   ${today}`, L, 20);
+    text(meta.join("   ·   "), L, 22);
 
     // Status pill
     y = 40;
-    const label = open
-      ? `Draft · ${open} question${open > 1 ? "s" : ""} open`
-      : "Final";
+    const label = open ? T.draft(open) : toConfirm ? T.toConfirm : T.final;
+    const warn = open || toConfirm;
     doc.setFont("helvetica", "bold"); doc.setFontSize(9);
     const pillW = doc.getTextWidth(label) + 8;
-    doc.setFillColor(...(open ? AMBER_BG : TEAL_BG));
+    doc.setFillColor(...(warn ? AMBER_BG : TEAL_BG));
     doc.roundedRect(L, y - 4.5, pillW, 6.5, 2, 2, "F");
-    doc.setTextColor(...(open ? AMBER : TEAL));
+    doc.setTextColor(...(warn ? AMBER : TEAL));
     text(label, L + 4, y);
     y += 10;
 
@@ -181,16 +254,16 @@
       // Stage bar
       doc.setFillColor(...TEAL_BG); doc.rect(L, y - 5.5, R - L, 8, "F");
       doc.setFont("helvetica", "bold"); doc.setFontSize(10.5); setInk();
-      text(`Stage ${st.number}`, L + 3, y);
+      text(`${T.stage} ${st.number}`, L + 3, y);
       text(money2(st.total_eur), R - 3, y, { align: "right" });
       y += 7;
 
       // Column headers
       doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(...MUTED);
-      text("Treatment", L + 3, y);
-      text("Qty", 126, y, { align: "right" });
-      text("Unit price", 158, y, { align: "right" });
-      text("Amount", R - 3, y, { align: "right" });
+      text(T.treatment, L + 3, y);
+      text(T.qty, 126, y, { align: "right" });
+      text(T.unit, 158, y, { align: "right" });
+      text(T.amount, R - 3, y, { align: "right" });
       y += 2;
       doc.setDrawColor(...LINE); doc.line(L, y, R, y);
       y += 4.5;
@@ -199,7 +272,7 @@
       doc.setFontSize(9.5);
       for (const l of st.lines) {
         const pending = l.status === "pending";
-        const desc = doc.splitTextToSize(l.description + (pending ? " (pending)" : ""), 102);
+        const desc = doc.splitTextToSize(l.description + (pending ? " " + T.pending : ""), 102);
         const rowH = Math.max(6, desc.length * 4.6 + 1.6);
         need(rowH);
         doc.setFont("helvetica", "normal");
@@ -219,12 +292,12 @@
       doc.setFontSize(9.5);
       if (st.discount_eur > 0) {
         setInk(); doc.setFont("helvetica", "normal");
-        text(`Discount${plan.discount ? ` (${plan.discount.label})` : ""}`, L + 3, y);
+        text(discountLabel || T.discount, L + 3, y);
         text(`-${money2(st.discount_eur)}`, R - 3, y, { align: "right" });
         y += 5;
       }
       setInk(); doc.setFont("helvetica", "bold");
-      text(`Stage ${st.number} total`, L + 3, y);
+      text(T.stageTotal(st.number), L + 3, y);
       text(money2(st.total_eur), R - 3, y, { align: "right" });
       y += 11;
     }
@@ -241,25 +314,26 @@
       text(val, R - 4, sy, { align: "right" });
       sy += bold ? 5 : 6;
     };
-    sumRow("Subtotal", money2(plan.totals.subtotal_eur), false);
-    if (plan.discount) sumRow(`Discount (-${plan.discount.percent}%)`, `-${money2(plan.totals.discount_eur)}`, false);
+    sumRow(T.subtotal, money2(plan.totals.subtotal_eur), false);
+    if (plan.discount) sumRow(`${discountLabel} (-${plan.discount.percent}%)`, `-${money2(plan.totals.discount_eur)}`, false);
     sy += 1; doc.setDrawColor(...LINE); doc.line(boxX + 4, sy, R - 4, sy);
     sy += 6;
-    sumRow("Total", money2(plan.totals.total_eur), true);
+    sumRow(T.total, money2(plan.totals.total_eur), true);
     doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(...MUTED);
-    text(open ? "Excludes pending lines until the questions are answered." : "All lines priced.", boxX + 4, sy + 1);
+    text(warn ? T.excludes : T.allPriced, boxX + 4, sy + 1);
     sy += 3;
     doc.setDrawColor(...LINE); doc.roundedRect(boxX, boxTop, boxW, sy + 4 - boxTop, 2, 2, "S");
     y = sy + 12;
 
     // To be confirmed
-    if (plan.pending_confirmation.length) {
-      const items = plan.pending_confirmation.map((p) => doc.splitTextToSize("• " + p, R - L - 10));
+    const confirmList = lang === "fr" ? plan.pending_confirmation_fr : plan.pending_confirmation;
+    if (confirmList.length) {
+      const items = confirmList.map((p) => doc.splitTextToSize("• " + p, R - L - 10));
       const h = 12 + items.reduce((a, it) => a + it.length * 4.6 + 1.5, 0);
       need(h);
       doc.setFillColor(...AMBER_BG); doc.roundedRect(L, y, R - L, h, 2, 2, "F");
       doc.setFont("helvetica", "bold"); doc.setFontSize(10); doc.setTextColor(...AMBER);
-      text("To be confirmed", L + 4, y + 6);
+      text(T.toBeConfirmed, L + 4, y + 6);
       let iy = y + 12;
       doc.setFont("helvetica", "normal"); doc.setFontSize(9.5); setInk();
       for (const it of items) { text(it, L + 4, iy); iy += it.length * 4.6 + 1.5; }
@@ -272,8 +346,8 @@
       doc.setPage(i);
       doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(...MUTED);
       doc.setDrawColor(...LINE); doc.line(L, 282, R, 282);
-      text("Estimate · subject to dentist confirmation", L, 287);
-      text(`Page ${i} of ${pages}`, R, 287, { align: "right" });
+      text(T.footer, L, 287);
+      text(T.page(i, pages), R, 287, { align: "right" });
     }
     return doc;
   }
@@ -285,19 +359,19 @@
   }
 
   function approve() {
-    if (!S.plan || S.plan.questions.length) return;
+    if (!S.plan || S.plan.status !== "final") return;
     S.approved = true;
     S.versions[S.versions.length - 1].approved = true;
     renderVersions();
-    $("download").disabled = false;
-    $("pill").textContent = "Approved";
+    renderPanel(S.plan);
     say(`Version ${S.version} approved. You can download the PDF.`);
   }
 
   function download() {
     const a = document.createElement("a");
     a.href = S.pdfUrl;
-    a.download = `treatment-plan-${S.plan.patient_ref}-v${S.version}.pdf`;
+    const who = (S.details.patient || S.plan.patient_ref).replace(/[^\w-]+/g, "_");
+    a.download = `treatment-plan-${who}-v${S.version}-${S.details.lang}.pdf`;
     a.click();
   }
 
@@ -327,6 +401,7 @@
     $("mic").innerHTML = "&#9632; Stop";
   }
 
+  // Plan details (clinic, dentist, patient, language) are kept when a new plan starts.
   function reset(keepThread) {
     S.extraction = null; S.plan = null; S.version = 0; S.answers = {}; S.versions = []; S.approved = false; S.sampleKey = null; S.aiQuestions = [];
     if (!keepThread) {
@@ -351,12 +426,7 @@
         body: JSON.stringify({ text }),
       });
       const data = await res.json();
-      if (!res.ok) {
-        const detail = typeof data.error === "string"
-          ? data.error
-          : (data.error && data.error.message) || JSON.stringify(data);
-        throw new Error(`status ${res.status}: ${detail}`);
-      }
+      if (!res.ok) throw new Error(data.error || `status ${res.status}`);
       const parsed = JSON.parse(data.choices[0].message.content);
       busy.remove();
       applyAI(parsed);
